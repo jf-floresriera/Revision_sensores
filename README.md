@@ -1,6 +1,6 @@
 # Sensores remotos: espectro electromagnético, plataformas y drones
 
-Presentación interactiva de 30 diapositivas (HTML5, CSS y JavaScript puros, sin librerías externas) que resume una revisión sobre percepción remota: el espectro electromagnético, las ventanas atmosféricas, las firmas espectrales, los sensores pasivos y activos, las plataformas (suelo, aire, espacio), los drones y misiones de NASA y ESA (Landsat, ECOSTRESS, GEDI, NISAR y BIOMASS).
+Presentación interactiva de 38 diapositivas (HTML5, CSS y JavaScript puros, sin librerías externas) que resume una revisión sobre percepción remota: el espectro electromagnético, las ventanas atmosféricas, las firmas espectrales, los sensores pasivos y activos, las plataformas (suelo, aire, espacio), los drones y misiones de NASA y ESA (Landsat, ECOSTRESS, GEDI, NISAR y BIOMASS).
 
 **Autor:** Jesus Enrique Flores Riera ([@jf-floresriera](https://github.com/jf-floresriera))
 
@@ -19,38 +19,18 @@ Para publicarla como página web, activa **GitHub Pages** en *Settings → Pages
 
 ## Contenido
 
-1. Portada
-2. Qué es la percepción remota
-3. Espectro electromagnético
-4. Albedo: nieve frente a océano
-5. Ventanas atmosféricas
-6. Firmas espectrales
-7. Las seis regiones útiles del espectro
-8. Ultravioleta y visible
-9. Infrarrojo cercano
-10. Infrarrojo de onda corta (SWIR)
-11. Infrarrojo térmico
-12. Microondas y radio
-13. Sensores pasivos y activos
-14. Plataformas: proximal y distal
-15. Órbitas
-16. Las cuatro resoluciones
-17. Satélites meteorológicos
-18. Radar SAR por bandas
-19. LiDAR: GEDI e ICESat-2
-20. Drones (UAV)
-21. Sensores a bordo de drones
-22. Costos
-23. Limitaciones
-24. Landsat 8 y 9 (TIRS)
-25. ECOSTRESS
-26. NISAR y BIOMASS
-27. Resumen de misiones
-28. Referencias de revistas científicas
-29. Referencias institucionales, guías y prensa
-30. Cierre
+- **Fundamentos (1–9):** percepción remota, espectro, albedo, ventanas atmosféricas, firmas espectrales y regiones útiles. Incluye dos diapositivas con figuras reales de NASA y NOAA.
+- **Regiones del espectro (10–14):** ultravioleta, visible, infrarrojo cercano, SWIR, térmico y microondas.
+- **Sensores y plataformas (15–21):** pasivos y activos, plataformas, órbitas, resoluciones (con figuras reales de NASA), satélites meteorológicos y radar SAR.
+- **Aplicación propia: guía SAR multisensor (22–23):** comparador interactivo entre radar (Sentinel-1 banda C y ALOS-2 banda L) e imagen óptica Sentinel-2 en el Meta, Colombia, y la retrodispersión por banda. Viene de [SAR-and-Optical-Multisensor-Interpretation-Guide](https://github.com/jf-floresriera/SAR-and-Optical-Multisensor-Interpretation-Guide).
+- **LiDAR y drones (24–28):** GEDI, sensores a bordo, costos y limitaciones.
+- **Aplicación propia: fenotipado con dron (29–31):** timelapse interactivo de cinco vuelos, calibración con Sentinel-2, grilla de parcelas, dinámica del dosel y heredabilidad. Viene de [pea_drone](https://github.com/jf-floresriera/pea_drone).
+- **Misiones (32–35):** Landsat 8 y 9, ECOSTRESS, NISAR y BIOMASS, con un resumen.
+- **Referencias y cierre (36–38).**
 
-Cada diapositiva enlaza sus fuentes en la parte inferior, y las dos diapositivas de referencias enlazan las 42 fuentes consultadas.
+Las figuras de los repositorios propios están incrustadas en `index.html`. Las de NASA y NOAA se cargan desde sus sitios, así que necesitan conexión a internet. Si no cargan, se muestra una tarjeta con el enlace a la fuente.
+
+Cada diapositiva enlaza sus fuentes en la parte inferior, y las dos diapositivas de referencias enlazan las 44 fuentes.
 
 ## Notas
 
