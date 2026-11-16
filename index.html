@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="author" content="Jesus Enrique Flores Riera">
+<title>Sensores remotos · espectro electromagnético, plataformas y drones</title>
+<style>
+:root{--ink:#f5f7ff;--mut:#aab4de;--c1:#6d4bff;--c2:#00c6ff;--c3:#ff4fa3;--g:#2de2a6;--y:#ffc857;--o:#ff7a45;--r:#ff4d6d;--v:#a06bff;--b:#3d8bff}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:#060a1d;color:var(--ink);font-family:"Segoe UI",system-ui,-apple-system,Roboto,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+#bg{position:fixed;inset:0;overflow:hidden;z-index:0;background:radial-gradient(ellipse at 50% 120%,#13183f 0%,#060a1d 60%)}
+#bg i{position:absolute;width:62vmax;height:62vmax;border-radius:50%;filter:blur(110px);opacity:.42;transition:background-color 1.4s ease;animation:drift 24s ease-in-out infinite alternate}
+#bg i:nth-child(1){left:-18vmax;top:-24vmax;background-color:var(--c1)}
+#bg i:nth-child(2){right:-22vmax;bottom:-28vmax;background-color:var(--c2);animation-delay:-9s}
+#bg i:nth-child(3){left:38vw;top:34vh;width:34vmax;height:34vmax;background-color:var(--c3);opacity:.22;animation-delay:-15s}
+#bg b{position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.08) 1px,transparent 1px);background-size:34px 34px;mask-image:radial-gradient(ellipse at center,#000 30%,transparent 80%);-webkit-mask-image:radial-gradient(ellipse at center,#000 30%,transparent 80%)}
+@keyframes drift{to{transform:translate(9vmax,6vmax) scale(1.15)}}
+
+#stage{position:absolute;left:50%;top:50%;width:1920px;height:1080px;transform:translate(-50%,-50%) scale(var(--s,1));z-index:1}
+.slide{position:absolute;inset:0;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .55s ease,visibility 0s .55s}
+.slide.on{opacity:1;visibility:visible;pointer-events:auto;transition:opacity .6s ease .1s,visibility 0s}
+.sl{position:absolute;inset:0;padding:96px 120px 130px}
+.cols{display:grid;grid-template-columns:5fr 7fr;gap:70px;align-items:center}
+.cols.r{grid-template-columns:6fr 6fr}
+.stack{display:flex;flex-direction:column;gap:44px}
+.stack>.gfx,.stack>.fill{flex:1;min-height:0}
+svg.gfx{width:100%;height:100%;overflow:visible}
+.cols>svg.gfx{height:820px}
+
+.eb{display:inline-flex;align-items:center;gap:14px;font-size:22px;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--c2);margin-bottom:26px}
+.eb::before{content:"";width:46px;height:4px;border-radius:4px;background:linear-gradient(90deg,var(--c1),var(--c2))}
+.h{font-size:78px;line-height:1.07;font-weight:800;letter-spacing:-.025em;max-width:1500px}
+.h.xl{font-size:150px;letter-spacing:-.04em;line-height:.98}
+.h.m{font-size:66px}
+.h em,.gt{font-style:normal;background:linear-gradient(90deg,var(--c1),var(--c2),var(--c3),var(--c1));background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 8s linear infinite}
+@keyframes shine{to{background-position:300% 0}}
+.lead{font-size:44px;color:var(--mut);margin-top:26px;font-weight:500}
+.note{font-size:20px;color:var(--mut);opacity:.8;font-style:italic}
+
+.chips{display:flex;flex-wrap:wrap;gap:16px;margin-top:44px}
+.chip{display:inline-flex;align-items:center;gap:12px;padding:14px 26px;border-radius:99px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.16);font-size:26px;font-weight:600;transition:transform .3s,background .3s,border-color .3s;cursor:default}
+.chip:hover{background:rgba(255,255,255,.16);border-color:var(--c2);transform:translateY(-5px)}
+.chip .ic{width:32px;height:32px;color:var(--c2)}
+.chip b{color:var(--c2)}
+
+.card{position:relative;background:linear-gradient(160deg,rgba(255,255,255,.11),rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.14);border-radius:34px;padding:34px;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);overflow:hidden;transition:transform .4s cubic-bezier(.2,.8,.2,1),border-color .3s,box-shadow .4s}
+.card::before{content:"";position:absolute;inset:0;background:radial-gradient(460px circle at var(--mx,50%) var(--my,-20%),rgba(255,255,255,.17),transparent 45%);opacity:0;transition:opacity .3s;pointer-events:none}
+.card:hover{transform:translateY(-10px) scale(1.015);border-color:rgba(255,255,255,.4);box-shadow:0 34px 80px -24px var(--c1)}
+.card:hover::before{opacity:1}
+.card .ic{width:58px;height:58px;color:var(--c2)}
+.card .ttl{font-size:34px;font-weight:800;margin-top:14px}
+.card .lab{margin-top:8px}
+.big{font-size:86px;font-weight:800;line-height:1;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.big small{font-size:.42em;font-weight:700;color:var(--mut);margin-left:8px;letter-spacing:0}
+.lab{font-size:24px;color:var(--mut);font-weight:600;line-height:1.3}
+.lim .ic{width:110px!important;height:110px!important}
+.grid{display:grid;gap:26px}
+.acc1{--k:var(--c1)}.acc2{--k:var(--c2)}.acc3{--k:var(--c3)}.accg{--k:var(--g)}.accy{--k:var(--y)}.acco{--k:var(--o)}
+.card[class*=acc] .ic,.card[class*=acc] .big{color:var(--k)}
+.card[class*=acc]{box-shadow:inset 0 3px 0 0 var(--k)}
+
+svg .ic,.ic{fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+svg text{font-family:inherit}
+.t-lab{fill:var(--mut);font-size:22px;font-weight:600}
+.t-big{fill:#fff;font-size:30px;font-weight:800}
+.ax{stroke:rgba(255,255,255,.25);stroke-width:2}
+.gridl{stroke:rgba(255,255,255,.07);stroke-width:1.5}
+
+/* Fuentes */
+.srcs{position:absolute;left:120px;bottom:40px;display:flex;align-items:center;flex-wrap:wrap;gap:10px;max-width:740px}
+.srcs span{font-size:15px;letter-spacing:.2em;text-transform:uppercase;color:var(--mut);font-weight:700;margin-right:4px}
+.srcs a{font-size:16px;color:var(--mut);padding:6px 14px;border:1px solid rgba(255,255,255,.18);border-radius:99px;text-decoration:none;transition:.25s;background:rgba(6,10,29,.4)}
+.srcs a:hover{color:#fff;border-color:var(--c2);background:rgba(255,255,255,.1)}
+.pgn{position:absolute;right:120px;top:52px;font-size:20px;font-weight:700;color:var(--mut);letter-spacing:.2em}
+.pgn b{color:#fff}
+
+/* Animaciones de entrada */
+@keyframes rise{from{opacity:0;transform:translateY(48px)}}
+@keyframes left{from{opacity:0;transform:translateX(-90px)}}
+@keyframes right{from{opacity:0;transform:translateX(90px)}}
+@keyframes zoom{from{opacity:0;transform:scale(.72)}}
+@keyframes fade{from{opacity:0}}
+@keyframes dash{from{stroke-dashoffset:1}}
+@keyframes ringd{from{stroke-dasharray:0 100}}
+@keyframes growx{from{transform:scaleX(0)}}
+@keyframes growy{from{transform:scaleY(0)}}
+svg .a,svg .bar,svg .vbar,svg .float,svg .spin,svg .pulse,svg .bob{transform-box:fill-box;transform-origin:center}
+.on .a{animation:rise .95s cubic-bezier(.2,.8,.2,1) backwards;animation-delay:calc(var(--i,0)*.11s + .15s)}
+.on .a.l{animation-name:left}.on .a.r{animation-name:right}.on .a.z{animation-name:zoom}.on .a.f{animation-name:fade;animation-duration:1.4s}
+.dr{stroke-dasharray:1;stroke-dashoffset:0}
+.on .dr{animation:dash 2.2s cubic-bezier(.6,.1,.2,1) backwards;animation-delay:calc(var(--i,0)*.22s + .35s)}
+.ring{stroke-dasharray:var(--v) 100;transform:rotate(-90deg);transform-origin:center;transform-box:fill-box}
+.on .ring{animation:ringd 2s cubic-bezier(.3,.8,.2,1) backwards;animation-delay:calc(var(--i,0)*.25s + .4s)}
+.bar{transform-origin:left center}
+svg .bar{transform-origin:left center}
+.on .bar{animation:growx 1.5s cubic-bezier(.2,.8,.2,1) backwards;animation-delay:calc(var(--i,0)*.16s + .45s)}
+.vbar{transform-origin:center bottom}
+svg .vbar{transform-origin:center bottom}
+.on .vbar{animation:growy 1.5s cubic-bezier(.2,.8,.2,1) backwards;animation-delay:calc(var(--i,0)*.18s + .45s)}
+
+/* Movimiento continuo */
+@keyframes flow{to{stroke-dashoffset:-60}}
+@keyframes floaty{to{transform:translateY(-18px)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{opacity:.35;transform:scale(.92)}50%{opacity:1;transform:scale(1.06)}}
+@keyframes bob{0%,100%{transform:translate(0,0)}50%{transform:translate(10px,-14px)}}
+@keyframes wv{to{transform:translateX(calc(-1px*var(--per)))}}
+@keyframes cn{to{transform:translateX(-300px)}}
+@keyframes ripple{from{transform:scale(.2);opacity:1}to{transform:scale(1.6);opacity:0}}
+@keyframes swap{0%,45%{opacity:1}55%,100%{opacity:0}}
+@keyframes blink{50%{opacity:.25}}
+.flow{stroke-dasharray:18 12}
+.on .flow{animation:flow 1.4s linear infinite}
+.on .float{animation:floaty 4s ease-in-out infinite alternate}
+.on .spin{animation:spin 50s linear infinite}
+.on .pulse{animation:pulse 2.6s ease-in-out infinite}
+.on .bob{animation:bob 5s ease-in-out infinite}
+.on .blink{animation:blink 1.6s ease-in-out infinite}
+.wave{animation:wv calc(var(--per)*.012s) linear infinite}
+.rip{transform-box:fill-box;transform-origin:center;animation:ripple 2.4s ease-out infinite}
+
+/* Gráficos HTML */
+.hbars{display:flex;flex-direction:column;gap:30px}
+.hb .row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px}
+.hb .nm{font-size:28px;font-weight:700}
+.hb .vl{font-size:40px;font-weight:800;font-variant-numeric:tabular-nums}
+.hb .tr{height:34px;border-radius:20px;background:rgba(255,255,255,.07);position:relative;overflow:hidden}
+.hb .bar{position:absolute;top:0;bottom:0;left:var(--x,0%);width:var(--w);border-radius:20px;background:linear-gradient(90deg,var(--k1,var(--c1)),var(--k2,var(--c2)));box-shadow:0 0 30px -4px var(--k2,var(--c2))}
+.vbars{display:flex;align-items:flex-end;justify-content:space-around;gap:40px;height:100%;padding-top:20px;border-bottom:3px solid rgba(255,255,255,.2)}
+.vb{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:14px;max-width:210px}
+.vb .vbar{width:100%;height:var(--h);border-radius:26px 26px 6px 6px;background:linear-gradient(180deg,var(--k1),var(--k2));box-shadow:0 0 50px -10px var(--k1);transition:filter .3s}
+.vb:hover .vbar{filter:brightness(1.25) saturate(1.2)}
+.vb .vl{font-size:56px;font-weight:800;font-variant-numeric:tabular-nums}
+.vb .nm{font-size:24px;color:var(--mut);font-weight:700;text-align:center;height:62px}
+
+.strip{display:flex;gap:6px;margin-top:20px}
+.strip i{flex:1;height:14px;border-radius:8px;background:rgba(255,255,255,.1);position:relative;transition:.3s}
+.strip i.lit{background:linear-gradient(90deg,var(--c1),var(--c2));box-shadow:0 0 18px var(--c2)}
+.strip-l{display:flex;gap:6px;margin-top:8px}
+.strip-l span{flex:1;font-size:14px;color:var(--mut);text-align:center;font-weight:700;letter-spacing:.05em}
+
+.ringbox{position:relative;display:flex;flex-direction:column;align-items:center}
+.ringbox svg{width:380px;height:380px}
+.ringbox .ctr{position:absolute;top:190px;left:50%;transform:translate(-50%,-50%);text-align:center}
+.ringbox .big{font-size:110px}
+
+/* UI */
+#bar{position:fixed;top:0;left:0;height:5px;width:0;background:linear-gradient(90deg,var(--c1),var(--c2),var(--c3));z-index:20;transition:width .6s cubic-bezier(.2,.8,.2,1);box-shadow:0 0 16px var(--c2)}
+#ui{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:10px;padding:7px 9px;border-radius:99px;background:rgba(8,12,36,.6);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.16);z-index:20;opacity:.55;transition:opacity .3s}
+#ui:hover{opacity:1}
+#ui button{width:42px;height:42px;border-radius:50%;border:0;background:rgba(255,255,255,.1);color:#fff;cursor:pointer;font-size:18px;display:grid;place-items:center;transition:.25s}
+#ui button:hover{background:linear-gradient(135deg,var(--c1),var(--c2));transform:scale(1.1)}
+#ui button svg{width:20px;height:20px}
+#num{min-width:78px;text-align:center;font-weight:700;font-variant-numeric:tabular-nums;font-size:15px;color:#dfe5ff}
+#hint{position:fixed;right:18px;bottom:22px;font-size:12px;color:var(--mut);z-index:20;opacity:.6;letter-spacing:.05em}
+@media (max-width:700px){#hint{display:none}}
+@media (prefers-reduced-motion:reduce){*,*::before{animation-duration:.01s!important;animation-iteration-count:1!important}}
+</style>
+</head>
+<body>
+<div id="bg"><i></i><i></i><i></i><b></b></div>
+<div id="bar"></div>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<defs>
+<symbol id="i-drop" viewBox="0 0 48 48"><path d="M24 5C17 15 11 22 11 30a13 13 0 0026 0c0-8-6-15-13-25z"/></symbol>
+<symbol id="i-flame" viewBox="0 0 48 48"><path d="M24 4c2 9 12 13 12 25a12 12 0 01-24 0c0-6 3-10 6-13 0 4 2 7 5 7 0-7-1-11 1-19z"/></symbol>
+<symbol id="i-rock" viewBox="0 0 48 48"><path d="M4 40l10-20 8 7 7-16 15 29z"/><path d="M22 27l4 13"/></symbol>
+<symbol id="i-cloud" viewBox="0 0 48 48"><path d="M14 37a9 9 0 010-18 12 12 0 0123 2 8 8 0 01-1 16z"/></symbol>
+<symbol id="i-leaf" viewBox="0 0 48 48"><path d="M8 40C8 19 20 8 41 7c0 21-12 33-33 33zM8 40l19-19"/></symbol>
+<symbol id="i-thermo" viewBox="0 0 48 48"><path d="M20 28V9a4 4 0 018 0v19a9 9 0 11-8 0z"/><path d="M24 32V18"/></symbol>
+<symbol id="i-sun" viewBox="0 0 48 48"><circle cx="24" cy="24" r="8"/><path d="M24 4v6M24 38v6M4 24h6M38 24h6M10 10l4 4M34 34l4 4M38 10l-4 4M14 34l-4 4"/></symbol>
+<symbol id="i-moon" viewBox="0 0 48 48"><path d="M36 31A15 15 0 1117 8a12 12 0 0019 23z"/></symbol>
+<symbol id="i-radar" viewBox="0 0 48 48"><circle cx="12" cy="36" r="4"/><path d="M20 28a11 11 0 00-11-3M26 22a19 19 0 00-21-5M32 16A27 27 0 004 9"/></symbol>
+<symbol id="i-laser" viewBox="0 0 48 48"><path d="M24 4v28M15 26l9 14 9-14"/><path d="M8 44h32"/></symbol>
+<symbol id="i-tree" viewBox="0 0 48 48"><path d="M24 4l11 15H13zM24 15l14 18H10zM24 33v11"/></symbol>
+<symbol id="i-drone" viewBox="0 0 48 48"><rect x="18" y="20" width="12" height="8" rx="2"/><path d="M18 20l-7-7M30 20l7-7M18 28l-7 7M30 28l7 7"/><circle cx="9" cy="11" r="5"/><circle cx="39" cy="11" r="5"/><circle cx="9" cy="37" r="5"/><circle cx="39" cy="37" r="5"/></symbol>
+<symbol id="i-sat" viewBox="0 0 48 48"><rect x="19" y="18" width="10" height="12" rx="2"/><rect x="3" y="19" width="12" height="10"/><rect x="33" y="19" width="12" height="10"/><path d="M15 24h4M29 24h4M24 30v6M20 40a6 4 0 018 0"/></symbol>
+<symbol id="i-clock" viewBox="0 0 48 48"><circle cx="24" cy="24" r="18"/><path d="M24 13v11l8 5"/></symbol>
+<symbol id="i-grid" viewBox="0 0 48 48"><path d="M6 6h36v36H6zM18 6v36M30 6v36M6 18h36M6 30h36"/></symbol>
+<symbol id="i-layers" viewBox="0 0 48 48"><path d="M24 5l19 9-19 9-19-9zM5 24l19 9 19-9M5 33l19 9 19-9"/></symbol>
+<symbol id="i-eye" viewBox="0 0 48 48"><path d="M3 24S12 9 24 9s21 15 21 15-9 15-21 15S3 24 3 24z"/><circle cx="24" cy="24" r="6"/></symbol>
+<symbol id="i-camera" viewBox="0 0 48 48"><rect x="4" y="13" width="40" height="27" rx="5"/><circle cx="24" cy="26" r="8"/><path d="M16 13l3-5h10l3 5"/></symbol>
+<symbol id="i-flash" viewBox="0 0 48 48"><path d="M28 4L10 28h12l-3 16 19-25H26z"/></symbol>
+<symbol id="i-snow" viewBox="0 0 48 48"><path d="M24 4v40M7 14l34 20M7 34l34-20M19 7l5 5 5-5M19 41l5-5 5 5"/></symbol>
+<symbol id="i-db" viewBox="0 0 48 48"><ellipse cx="24" cy="11" rx="16" ry="6"/><path d="M8 11v26c0 3 7 6 16 6s16-3 16-6V11M8 24c0 3 7 6 16 6s16-3 16-6"/></symbol>
+<symbol id="i-plug" viewBox="0 0 48 48"><path d="M17 5v12M31 5v12M10 17h28v7a14 14 0 01-28 0zM24 38v7"/></symbol>
+<symbol id="i-coin" viewBox="0 0 48 48"><circle cx="24" cy="24" r="19"/><path d="M24 11v26M30 17c-2-2-11-3-11 3s11 3 11 9-9 5-12 2"/></symbol>
+<symbol id="i-weight" viewBox="0 0 48 48"><path d="M12 16h24l6 26H6z"/><circle cx="24" cy="10" r="5"/></symbol>
+<symbol id="i-zoom" viewBox="0 0 48 48"><circle cx="20" cy="20" r="13"/><path d="M30 30l13 13M20 14v12M14 20h12"/></symbol>
+<symbol id="i-bolt" viewBox="0 0 48 48"><path d="M6 24h8l5-12 10 24 5-12h8"/></symbol>
+<symbol id="i-target" viewBox="0 0 48 48"><circle cx="24" cy="24" r="18"/><circle cx="24" cy="24" r="9"/><circle cx="24" cy="24" r="2"/></symbol>
+<symbol id="i-wave" viewBox="0 0 48 48"><path d="M3 24c5-12 9-12 14 0s9 12 14 0 9-12 14 0"/></symbol>
+<symbol id="i-book" viewBox="0 0 48 48"><path d="M6 8h14a6 6 0 016 6v28a5 5 0 00-5-5H6zM42 8H28a4 4 0 00-2 1M42 8v29H27"/></symbol>
+<symbol id="i-bank" viewBox="0 0 48 48"><path d="M4 18L24 6l20 12zM8 18v18M18 18v18M30 18v18M40 18v18M4 40h40"/></symbol>
+<symbol id="i-news" viewBox="0 0 48 48"><rect x="5" y="7" width="38" height="34" rx="4"/><path d="M12 16h24M12 24h10M12 32h10M28 24h8v8h-8z"/></symbol>
+<symbol id="i-git" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M12 .5a12 12 0 00-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1.1-.7.1-.7.1-.7 1.2.1 1.9 1.2 1.9 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 016 0C17.3 4.7 18.3 5 18.3 5c.6 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0012 .5z"/></symbol>
+<linearGradient id="gA" x1="0" x2="1"><stop offset="0" stop-color="#6d4bff"/><stop offset="1" stop-color="#00c6ff"/></linearGradient>
+<linearGradient id="gB" x1="0" x2="1"><stop offset="0" stop-color="#ff4fa3"/><stop offset="1" stop-color="#ffc857"/></linearGradient>
+<linearGradient id="gC" x1="0" x2="1"><stop offset="0" stop-color="#2de2a6"/><stop offset="1" stop-color="#00c6ff"/></linearGradient>
+<linearGradient id="rainbow" x1="0" x2="1"><stop offset="0" stop-color="#8b3dff"/><stop offset=".18" stop-color="#3d5bff"/><stop offset=".36" stop-color="#00c6ff"/><stop offset=".52" stop-color="#2de26a"/><stop offset=".68" stop-color="#ffe14d"/><stop offset=".84" stop-color="#ff8a3d"/><stop offset="1" stop-color="#ff2d4d"/></linearGradient>
+<radialGradient id="earth" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#4fb3ff"/><stop offset=".55" stop-color="#1a4fd6"/><stop offset="1" stop-color="#0b1a5c"/></radialGradient>
+<radialGradient id="glow" r=".5"><stop offset=".6" stop-color="#00c6ff" stop-opacity=".45"/><stop offset="1" stop-color="#00c6ff" stop-opacity="0"/></radialGradient>
+<radialGradient id="sunG" r=".5"><stop offset="0" stop-color="#fff6c2"/><stop offset=".45" stop-color="#ffc857"/><stop offset="1" stop-color="#ff7a45" stop-opacity="0"/></radialGradient>
+<radialGradient id="hot" r=".5"><stop offset="0" stop-color="#fffbd1"/><stop offset=".3" stop-color="#ffd23d"/><stop offset=".6" stop-color="#ff4d2d"/><stop offset="1" stop-color="#7a1d8c" stop-opacity="0"/></radialGradient>
+<radialGradient id="warm" r=".5"><stop offset="0" stop-color="#ff8a3d"/><stop offset=".6" stop-color="#c2207a"/><stop offset="1" stop-color="#3a1070" stop-opacity="0"/></radialGradient>
+<linearGradient id="therm" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#1a0b4d"/><stop offset=".3" stop-color="#7a1d8c"/><stop offset=".55" stop-color="#e5304d"/><stop offset=".8" stop-color="#ffb02d"/><stop offset="1" stop-color="#fffbd1"/></linearGradient>
+<linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0b0f33"/><stop offset=".5" stop-color="#1d2a7a"/><stop offset="1" stop-color="#3d8bff"/></linearGradient>
+<filter id="blur12"><feGaussianBlur stdDeviation="12"/></filter>
+<filter id="blur30"><feGaussianBlur stdDeviation="30"/></filter>
+<filter id="glw" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+<marker id="arw" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="context-stroke"/></marker>
+<g id="satG"><rect x="-14" y="-12" width="28" height="24" rx="5" fill="#e8ecff"/><rect x="-62" y="-9" width="40" height="18" rx="2" fill="#3d8bff" stroke="#9cc9ff" stroke-width="2"/><rect x="22" y="-9" width="40" height="18" rx="2" fill="#3d8bff" stroke="#9cc9ff" stroke-width="2"/><path d="M-22 0h8M14 0h8M0 12v10" stroke="#e8ecff" stroke-width="3"/><circle cy="24" r="5" fill="#ffc857"/></g>
+<g id="droneG"><rect x="-20" y="-8" width="40" height="16" rx="6" fill="#e8ecff"/><path d="M-20-4l-24-10M20-4l24-10" stroke="#e8ecff" stroke-width="4"/><ellipse cx="-46" cy="-16" rx="22" ry="4" fill="#ff4fa3" opacity=".8"/><ellipse cx="46" cy="-16" rx="22" ry="4" fill="#ff4fa3" opacity=".8"/><circle cy="12" r="6" fill="#2de2a6"/></g>
+<g id="planeG"><path d="M-70 0q10-10 60-10h40q30 0 40 10q-10 10-40 10h-40q-50 0-60-10z" fill="#e8ecff"/><path d="M-10-8l-20-30h16l30 30zM-10 8l-20 30h16l30-30zM-62-2l-12-18h10l14 16z" fill="#b8c4ff"/></g>
+</defs>
+</svg>
+
+<main id="stage">
+<style>
+.pl rect{fill:rgba(8,12,36,.78);stroke:var(--pc,rgba(255,255,255,.35));stroke-width:2}
+.pl text{fill:#fff;font-size:24px;font-weight:700;text-anchor:middle;dominant-baseline:central}
+.by{display:flex;align-items:center;gap:22px;margin-top:70px}
+.av{width:84px;height:84px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:30px;background:linear-gradient(135deg,var(--c1),var(--c3));box-shadow:0 0 40px -6px var(--c3)}
+.by b{display:block;font-size:34px}
+.by a{font-size:22px;color:var(--mut);text-decoration:none;display:inline-flex;align-items:center;gap:10px;margin-top:6px;transition:.25s}
+.by a:hover{color:#fff}
+.by a svg{width:24px;height:24px}
+.lg{display:flex;flex-direction:column;gap:18px;margin-top:48px}
+.lg .chip{cursor:pointer}
+.lg i{width:22px;height:22px;border-radius:50%;background:var(--k)}
+.curve{transition:opacity .3s,stroke-width .3s}
+.dim .curve{opacity:.15}
+.dim .curve.hi{opacity:1;stroke-width:9}
+</style>
+
+<!-- 1 · Portada -->
+<section class="slide" data-c="#6d4bff,#00c6ff,#ff4fa3">
+ <div class="sl cols">
+  <div>
+   <div class="eb a">Revisión · percepción remota</div>
+   <h1 class="h xl a">Sensores<br><em>remotos</em></h1>
+   <p class="lead a">Espectro electromagnético, plataformas y drones</p>
+   <div class="by a"><span class="av">JE</span><div><b>Jesus Enrique Flores Riera</b><a href="https://github.com/jf-floresriera/Revision_sensores" target="_blank" rel="noopener"><svg><use href="#i-git"/></svg>jf-floresriera/Revision_sensores</a></div></div>
+  </div>
+  <svg class="gfx a z" viewBox="0 0 900 800">
+   <g id="stars"></g>
+   <circle cx="450" cy="400" r="230" fill="url(#glow)" class="pulse"/>
+   <clipPath id="ec"><circle cx="450" cy="400" r="150"/></clipPath>
+   <circle cx="450" cy="400" r="150" fill="url(#earth)"/>
+   <g clip-path="url(#ec)" opacity=".85"><g style="animation:cn 26s linear infinite">
+    <g id="cnt1" fill="#2de2a6"><path d="M330 330q30-40 70-20t40 50q-30 40-70 30t-40-60z"/><path d="M470 420q40-30 80 10t20 70q-50 30-80 0t-20-80z"/><path d="M380 480q20-20 50 0t10 40q-30 20-50 0z"/><path d="M520 280q30-10 50 20t-10 40q-30 0-40-60z"/></g>
+    <use href="#cnt1" x="300"/></g>
+    <circle cx="390" cy="340" r="160" fill="#fff" opacity=".07"/></g>
+   <g transform="rotate(-24 450 400)"><ellipse cx="450" cy="400" rx="370" ry="128" fill="none" stroke="url(#gA)" stroke-width="2.5" stroke-dasharray="6 10" opacity=".8"/>
+    <g><animateMotion dur="16s" repeatCount="indefinite" rotate="0" path="M80,400a370,128 0 1,0 740,0a370,128 0 1,0 -740,0"/><g transform="rotate(24) scale(.9)"><use href="#satG"/></g></g></g>
+   <g transform="rotate(62 450 400)"><ellipse cx="450" cy="400" rx="300" ry="96" fill="none" stroke="url(#gB)" stroke-width="2.5" stroke-dasharray="6 10" opacity=".7"/>
+    <g><animateMotion dur="11s" repeatCount="indefinite" path="M150,400a300,96 0 1,1 600,0a300,96 0 1,1 -600,0"/><g transform="rotate(-62) scale(.6)"><use href="#satG"/></g></g></g>
+   <g class="bob"><g transform="translate(740 650) scale(1.1)"><use href="#droneG"/></g></g>
+   <g transform="translate(740 676)"><path d="M-40 0L0 0 40 0" stroke="none"/><path d="M-60 90L0 0 60 90z" fill="#2de2a6" opacity=".12" class="pulse"/></g>
+  </svg>
+ </div>
+</section>
+
+<!-- 2 · Qué es -->
+<section class="slide" data-c="#ff7a45,#ffc857,#00c6ff" data-refs="1,3">
+ <div class="sl cols">
+  <div>
+   <div class="eb a">01 · Fundamentos</div>
+   <h2 class="h a">Medir la Tierra <em>sin tocarla</em>: luz reflejada o emitida.</h2>
+   <div class="chips">
+    <span class="chip a"><svg class="ic"><use href="#i-sun"/></svg>Fuente</span>
+    <span class="chip a"><svg class="ic"><use href="#i-leaf"/></svg>Superficie</span>
+    <span class="chip a"><svg class="ic"><use href="#i-sat"/></svg>Sensor</span>
+   </div>
+  </div>
+  <svg class="gfx" viewBox="0 0 900 800">
+   <g class="a z"><circle cx="140" cy="150" r="140" fill="url(#sunG)" class="pulse"/>
+    <g class="spin"><path d="M140 40v-30M140 260v30M30 150H0M250 150h30M62 72L40 50M218 228l22 22M218 72l22-22M62 228l-22 22" stroke="#ffc857" stroke-width="6" stroke-linecap="round"/></g>
+    <circle cx="140" cy="150" r="62" fill="#ffd56b"/></g>
+   <path class="a f" d="M0 640Q450 560 900 640V800H0z" fill="url(#gC)" opacity=".85"/>
+   <path class="a f" d="M0 690Q450 610 900 690V800H0z" fill="#0b6b5a" opacity=".6"/>
+   <g fill="#0f8a5f" class="a"><path d="M300 612l22-50 22 50z"/><path d="M340 606l26-62 26 62z"/><path d="M640 606l20-46 20 46z"/></g>
+   <g class="float"><g transform="translate(720 170) scale(1.5)"><use href="#satG"/></g></g>
+   <path d="M200 210L440 590" stroke="#ffc857" stroke-width="7" fill="none" class="flow" marker-end="url(#arw)"/>
+   <path d="M470 590L690 230" stroke="#00c6ff" stroke-width="7" fill="none" class="flow" marker-end="url(#arw)"/>
+   <path d="M590 600C640 560 570 520 625 470S630 380 670 330S690 270 705 240" stroke="#ff4fa3" stroke-width="6" fill="none" class="flow" marker-end="url(#arw)"/>
+   <g class="a"><g class="pl" style="--pc:#ffc857"><text x="250" y="420">Radiación solar</text></g></g>
+   <g class="a"><g class="pl" style="--pc:#00c6ff"><text x="520" y="330">Reflejada</text></g></g>
+   <g class="a"><g class="pl" style="--pc:#ff4fa3"><text x="780" y="470">Emitida</text></g></g>
+  </svg>
+ </div>
+</section>
+
+<!-- 3 · Espectro -->
+<section class="slide" data-c="#ff4fa3,#6d4bff,#00c6ff" data-refs="2,39">
+ <div class="sl stack">
+  <div><div class="eb a">02 · Espectro electromagnético</div>
+  <h2 class="h a">El ojo solo ve <em>una franja diminuta</em> del espectro.</h2></div>
+  <svg class="gfx" viewBox="0 0 1680 600">
+   <linearGradient id="wgrad" x1="0" x2="1"><stop offset="0" stop-color="#ff7a45"/><stop offset=".4" stop-color="#ff4fa3"/><stop offset=".7" stop-color="#6d4bff"/><stop offset="1" stop-color="#00c6ff"/></linearGradient>
+   <linearGradient id="rainbowR" href="#rainbow" x1="1" x2="0"/>
+   <text x="0" y="20" class="t-lab a">← Onda larga · baja frecuencia</text>
+   <text x="1680" y="20" class="t-lab a" text-anchor="end">Onda corta · alta frecuencia →</text>
+   <path id="chirp" class="dr" fill="none" stroke="url(#wgrad)" stroke-width="5" filter="url(#glw)"/>
+   <g id="segs"></g>
+   <path class="a f" d="M723 345L420 440M955 345L1260 440" stroke="rgba(255,255,255,.4)" stroke-width="2" stroke-dasharray="6 8"/>
+   <g class="a z"><rect x="420" y="440" width="840" height="78" rx="39" fill="url(#rainbowR)" filter="url(#glw)"/>
+   <text x="440" y="566" class="t-lab">0.7 µm</text><text x="1240" y="566" class="t-lab" text-anchor="end">0.4 µm</text>
+   <g transform="translate(810 450)" color="#fff"><svg class="ic" width="60" height="60" style="stroke-width:3"><use href="#i-eye"/></svg></g></g>
+  </svg>
+ </div>
+</section>
+
+<!-- 4 · Albedo -->
+<section class="slide" data-c="#00c6ff,#6d4bff,#ff7a45" data-refs="2">
+ <div class="sl cols">
+  <div>
+   <div class="eb a">03 · Interacción con la superficie</div>
+   <h2 class="h a">La nieve devuelve <em>90%</em> del Sol; el océano, apenas 6%.</h2>
+   <div class="chips"><span class="chip a"><svg class="ic"><use href="#i-thermo"/></svg>El océano reemite lo absorbido como infrarrojo</span></div>
+  </div>
+  <div style="display:flex;justify-content:space-around;align-items:center">
+   <div class="ringbox a z"><svg viewBox="0 0 380 380"><circle cx="190" cy="190" r="160" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="36"/><circle cx="190" cy="190" r="160" fill="none" stroke="url(#gA)" stroke-width="36" stroke-linecap="round" pathLength="100" class="ring" style="--v:90"/></svg>
+    <div class="ctr"><div class="big"><span class="cnt" data-to="90"></span><small>%</small></div></div>
+    <div class="chip" style="margin-top:26px"><svg class="ic"><use href="#i-snow"/></svg>Nieve</div></div>
+   <div class="ringbox a z"><svg viewBox="0 0 380 380"><circle cx="190" cy="190" r="160" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="36"/><circle cx="190" cy="190" r="160" fill="none" stroke="url(#gB)" stroke-width="36" stroke-linecap="round" pathLength="100" class="ring" style="--v:6;--i:1"/></svg>
+    <div class="ctr"><div class="big"><span class="cnt" data-to="6"></span><small>%</small></div></div>
+    <div class="chip" style="margin-top:26px"><svg class="ic"><use href="#i-wave"/></svg>Océano</div></div>
+  </div>
+ </div>
+</section>
+
+<!-- 5 · Ventanas atmosféricas -->
+<section class="slide" data-c="#2de2a6,#00c6ff,#6d4bff" data-refs="3,4">
+ <div class="sl stack">
+  <div><div class="eb a">04 · Ventanas atmosféricas</div>
+  <h2 class="h a">Los gases bloquean bandas; <em>las ventanas</em> dejan pasar la señal.</h2></div>
+  <svg class="gfx" viewBox="0 0 1680 580">
+   <linearGradient id="wf" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2de2a6" stop-opacity=".45"/><stop offset="1" stop-color="#00c6ff" stop-opacity="0"/></linearGradient>
+   <g class="a f" fill="rgba(45,226,166,.1)" stroke="rgba(45,226,166,.5)" stroke-dasharray="6 6" stroke-width="2">
+    <rect x="220" y="60" width="430" height="410" rx="14"/><rect x="990" y="60" width="80" height="410" rx="14"/><rect x="1175" y="60" width="110" height="410" rx="14"/><rect x="1490" y="60" width="100" height="410" rx="14"/></g>
+   <g class="a" style="--i:2"><g class="pl" style="--pc:#2de2a6"><text x="435" y="30">Visible + NIR</text></g></g>
+   <g class="a" style="--i:3"><g class="pl" style="--pc:#2de2a6"><text x="1030" y="30">3–5 µm</text></g></g>
+   <g class="a" style="--i:4"><g class="pl" style="--pc:#2de2a6"><text x="1230" y="100">8–14 µm</text></g></g>
+   <g class="a" style="--i:5"><g class="pl" style="--pc:#2de2a6"><text x="1540" y="30">Microondas</text></g></g>
+   <line x1="90" y1="470" x2="1600" y2="470" class="ax"/><line x1="90" y1="60" x2="90" y2="470" class="ax"/>
+   <text class="t-lab" transform="translate(50 265) rotate(-90)" text-anchor="middle">Transmisión</text>
+   <path id="winFill" fill="url(#wf)" class="a f"/>
+   <path id="winLine" fill="none" stroke="#2de2a6" stroke-width="5" class="dr" filter="url(#glw)"/>
+   <g class="a f t-lab" style="--i:6;font-size:21px" fill="#ff7a8f" text-anchor="middle">
+    <text x="130" y="505">O₃</text><text x="670" y="505">H₂O</text><text x="815" y="505">H₂O</text><text x="1120" y="505">CO₂</text><text x="1225" y="505">O₃</text><text x="1390" y="505">H₂O · CO₂</text></g>
+   <g class="t-lab" text-anchor="middle"><text x="140" y="555">UV</text><text x="390" y="555">Visible</text><text x="900" y="555">Infrarrojo</text><text x="1540" y="555">Microondas</text></g>
+   <text x="1600" y="590" class="note" text-anchor="end" fill="#aab4de" style="font-size:18px">Esquema ilustrativo</text>
+  </svg>
+ </div>
+</section>
+
+<!-- 6 · Firmas espectrales -->
+<section class="slide" data-c="#2de2a6,#ffc857,#00c6ff" data-refs="3,5">
+ <div class="sl cols">
+  <div>
+   <div class="eb a">05 · Firmas espectrales</div>
+   <h2 class="h a">Cada material deja <em>su huella espectral</em>.</h2>
+   <div class="lg" id="lg6">
+    <span class="chip a" data-k="veg" style="--k:#2de2a6"><i></i>Vegetación</span>
+    <span class="chip a" data-k="sand" style="--k:#ffc857"><i></i>Arena / suelo</span>
+    <span class="chip a" data-k="wat" style="--k:#3d8bff"><i></i>Agua</span>
+   </div>
+  </div>
+  <svg class="gfx" viewBox="0 0 900 720" id="sig">
+   <g class="a f"><rect x="80" y="60" width="111" height="540" fill="rgba(255,255,255,.04)"/><rect x="191" y="60" width="223" height="540" fill="rgba(255,79,163,.08)"/>
+    <text x="135" y="45" class="t-lab" text-anchor="middle">Visible</text><text x="302" y="45" class="t-lab" text-anchor="middle">NIR</text><text x="637" y="45" class="t-lab" text-anchor="middle">SWIR</text></g>
+   <g class="gridl"><line x1="80" y1="330" x2="860" y2="330"/><line x1="80" y1="60" x2="860" y2="60"/></g>
+   <line x1="80" y1="600" x2="860" y2="600" class="ax"/><line x1="80" y1="60" x2="80" y2="600" class="ax"/>
+   <g class="t-lab" text-anchor="end"><text x="66" y="606">0%</text><text x="66" y="336">30%</text><text x="66" y="66">60%</text></g>
+   <g class="t-lab" text-anchor="middle"><text x="80" y="640">0.4</text><text x="303" y="640">1.0</text><text x="489" y="640">1.5</text><text x="674" y="640">2.0</text><text x="860" y="640">2.5 µm</text></g>
+   <path class="curve dr" data-k="wat" fill="none" stroke="#3d8bff" stroke-width="6" stroke-linecap="round" data-pts="[[80,528],[117,546],[154,573],[191,586],[266,595],[560,597],[860,597]]"/>
+   <path class="curve dr" data-k="sand" style="--i:1" fill="none" stroke="#ffc857" stroke-width="6" stroke-linecap="round" data-pts="[[80,492],[154,420],[229,348],[340,294],[414,276],[451,312],[526,240],[581,258],[637,303],[711,222],[860,240]]"/>
+   <path class="curve dr" data-k="veg" style="--i:2" fill="none" stroke="#2de2a6" stroke-width="6" stroke-linecap="round" filter="url(#glw)" data-pts="[[80,564],[99,555],[136,492],[162,546],[180,564],[199,375],[221,195],[266,150],[340,168],[396,222],[451,438],[526,312],[581,348],[637,528],[749,456],[860,528]]"/>
+   <text x="860" y="700" class="note" text-anchor="end" fill="#aab4de" style="font-size:18px">Curvas esquemáticas</text>
+  </svg>
+ </div>
+</section>
+
+<!-- 7 · Regiones -->
+<section class="slide" data-c="#a06bff,#ff4fa3,#00c6ff" data-refs="3,5">
+ <div class="sl stack">
+  <div><div class="eb a">06 · Regiones útiles</div>
+  <h2 class="h a">Seis regiones del espectro, <em>seis maneras</em> de mirar la Tierra.</h2></div>
+  <svg class="gfx" viewBox="0 0 1680 600" id="gantt"></svg>
+ </div>
+</section>
+
+<!-- 8 · UV y visible -->
+<section class="slide" data-c="#a06bff,#3d8bff,#ff4d6d" data-refs="5,42">
+ <div class="sl cols r">
+  <div>
+   <div class="eb a">07 · Ultravioleta y visible</div>
+   <h2 class="h a">El UV se dispersa <em>16 veces más</em> que el rojo.</h2>
+   <div class="chips">
+    <span class="chip a"><svg class="ic"><use href="#i-cloud"/></svg>Ozono absorbe UV &lt; 0.25 µm</span>
+    <span class="chip a"><svg class="ic"><use href="#i-sat"/></svg>OMI y OMPS miden ozono</span>
+    <span class="chip a"><svg class="ic"><use href="#i-sun"/></svg>Visible = ventana + pico solar</span>
+   </div>
+  </div>
+  <div style="height:700px;display:flex;flex-direction:column">
+   <div class="lab a" style="text-align:center;margin-bottom:10px">Dispersión de Rayleigh relativa al rojo</div>
+   <div class="vbars">
+    <div class="vb"><div class="vl">×<span class="cnt" data-to="1"></span></div><div class="vbar" style="--h:6.25%;--k1:#ff4d6d;--k2:#8c1230"></div><div class="nm">Rojo</div></div>
+    <div class="vb"><div class="vl">×<span class="cnt" data-to="4"></span></div><div class="vbar" style="--h:25%;--k1:#3d8bff;--k2:#1a3fa6;--i:1"></div><div class="nm">Azul</div></div>
+    <div class="vb"><div class="vl">×<span class="cnt" data-to="16"></span></div><div class="vbar" style="--h:100%;--k1:#c08bff;--k2:#4b1fa6;--i:2"></div><div class="nm">Ultravioleta</div></div>
+   </div>
+  </div>
+ </div>
+</section>
+
+<!-- 9 · NIR -->
+<section class="slide" data-c="#2de2a6,#ff4fa3,#ffc857" data-refs="5">
+ <div class="sl cols">
+  <div>
+   <div class="eb a">08 · Infrarrojo cercano · 0.7–1.3 µm</div>
+   <h2 class="h a">El infrarrojo cercano <em>delata la salud</em> de la vegetación.</h2>
+   <div class="chips">
+    <span class="chip a"><svg class="ic"><use href="#i-drop"/></svg>Agua vs. vegetación</span>
+    <span class="chip a"><svg class="ic"><use href="#i-tree"/></svg>Caducifolios vs. coníferas</span>
+    <span class="chip a"><svg class="ic"><use href="#i-leaf"/></svg>Hojas sanas brillan en NIR</span>
+   </div>
+  </div>
+  <svg class="gfx" viewBox="0 0 900 780">
+   <linearGradient id="leafG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5dffb0"/><stop offset="1" stop-color="#0b7a4f"/></linearGradient>
+   <g class="a z"><path d="M120 600C280 400 620 390 790 540C620 670 290 700 120 600z" fill="url(#leafG)"/>
+    <path d="M120 600C330 560 560 550 790 540M300 585l60-70M420 575l60-80M540 565l60-70M360 590l50 50M480 580l50 50" stroke="#0b5a3a" stroke-width="5" fill="none" stroke-linecap="round"/></g>
+   <g text-anchor="middle" style="font-size:28px;font-weight:800">
+    <text x="110" y="50" fill="#3d8bff" class="a">Azul</text><text x="230" y="50" fill="#ff4d6d" class="a">Rojo</text><text x="350" y="50" fill="#2de2a6" class="a">Verde</text><text x="470" y="50" fill="#ff4fa3" class="a">NIR</text></g>
+   <path d="M110 75L300 470" stroke="#3d8bff" stroke-width="6" class="flow" fill="none"/>
+   <path d="M230 75L400 455" stroke="#ff4d6d" stroke-width="6" class="flow" fill="none"/>
+   <path d="M350 75L500 450L560 300" stroke="#2de2a6" stroke-width="5" class="flow" fill="none" marker-end="url(#arw)"/>
+   <path d="M470 75L600 450L850 80" stroke="#ff4fa3" stroke-width="14" class="flow" fill="none" filter="url(#glw)" marker-end="url(#arw)"/>
+   <circle cx="300" cy="470" r="22" fill="#3d8bff" class="pulse"/><circle cx="400" cy="455" r="22" fill="#ff4d6d" class="pulse"/>
+   <g class="a" style="--i:5"><g class="pl" style="--pc:#ff4d6d"><text x="300" y="720">Clorofila absorbe</text></g></g>
+   <g class="a" style="--i:6"><g class="pl" style="--pc:#ff4fa3"><text x="740" y="280">Rebota con fuerza</text></g></g>
+  </svg>
+ </div>
+</section>
+
+<!-- 10 · SWIR -->
+<section class="slide" data-c="#ff7a45,#ffc857,#6d4bff" data-refs="6,7,8,9">
+ <div class="sl stack" style="gap:30px">
+  <div><div class="eb a">09 · Infrarrojo de onda corta (SWIR)</div>
+  <h2 class="h a">El SWIR ve <em>agua oculta, fuego y minerales</em>.</h2></div>
+  <svg class="gfx" viewBox="0 0 1680 420" id="swir">
+   <rect x="156" y="20" width="1444" height="340" rx="16" fill="rgba(255,200,87,.06)" class="a f"/>
+   <g class="a"><g class="pl" style="--pc:#ffc857"><text x="880" y="30">SWIR · 1,100–3,000 nm</text></g></g>
+   <line x1="80" y1="360" x2="1600" y2="360" class="ax"/>
+   <path id="swFill" class="a f" fill="url(#wf)"/>
+   <path id="swLine" class="dr" fill="none" stroke="#ffc857" stroke-width="5" filter="url(#glw)"/>
+   <g id="swPins"></g>
+   <g class="t-lab" text-anchor="middle"><text x="80" y="400">1,000</text><text x="460" y="400">1,500</text><text x="840" y="400">2,000</text><text x="1220" y="400">2,500</text><text x="1600" y="400">3,000 nm</text></g>
+  </svg>
+  <div class="grid" style="grid-template-columns:repeat(4,1fr)">
+   <div class="card acc2 a" style="padding:24px 28px"><svg class="ic"><use href="#i-drop"/></svg><div class="lab" style="color:#fff;font-size:26px">Agua en plantas y suelo</div></div>
+   <div class="card acco a" style="padding:24px 28px"><svg class="ic"><use href="#i-flame"/></svg><div class="lab" style="color:#fff;font-size:26px">Quemas y fuego activo</div></div>
+   <div class="card accy a" style="padding:24px 28px"><svg class="ic"><use href="#i-rock"/></svg><div class="lab" style="color:#fff;font-size:26px">Rocas y minerales</div></div>
+   <div class="card acc1 a" style="padding:24px 28px"><svg class="ic"><use href="#i-snow"/></svg><div class="lab" style="color:#fff;font-size:26px">Nubes vs. nieve y hielo</div></div>
+  </div>
+ </div>
+</section>
+
+<!-- 11 · Térmico -->
+<section class="slide" data-c="#ff4d2d,#ffb02d,#7a1d8c" data-refs="5,15,11">
+ <div class="sl cols">
+  <div>
+   <div class="eb a">10 · Infrarrojo térmico · 3–15 µm</div>
+   <h2 class="h a">El térmico mide temperatura <em>de día y de noche</em>.</h2>
+   <div class="grid" style="grid-template-columns:1fr 1fr 1.25fr;margin-top:48px">
+    <div class="card acco a"><div class="big" style="font-size:56px"><span class="cnt" data-to="0.1" data-dec="1"></span><small>°C</small></div><div class="lab">Resolución térmica</div></div>
+    <div class="card accy a"><div class="big" style="font-size:56px"><span class="cnt" data-to="3"></span>–<span class="cnt" data-to="5"></span></div><div class="lab">Ventana en µm</div></div>
+    <div class="card acc3 a"><div class="big" style="font-size:56px;white-space:nowrap"><span class="cnt" data-to="8"></span>–<span class="cnt" data-to="14"></span></div><div class="lab">Ventana en µm</div></div>
+   </div>
+   <div class="chips"><span class="chip a"><svg class="ic"><use href="#i-sun"/></svg><svg class="ic"><use href="#i-moon"/></svg>Energía emitida, no reflejada</span></div>
+  </div>
+  <svg class="gfx" viewBox="0 0 900 780">
+   <clipPath id="camc"><rect x="40" y="80" width="700" height="560" rx="34"/></clipPath>
+   <g class="a z">
+    <rect x="40" y="80" width="700" height="560" rx="34" fill="#160a40"/>
+    <g clip-path="url(#camc)" filter="url(#blur12)">
+     <rect x="40" y="480" width="700" height="160" fill="#4a1478"/>
+     <circle cx="230" cy="400" r="190" fill="url(#warm)" class="pulse"/>
+     <circle cx="250" cy="420" r="110" fill="url(#hot)" class="pulse" style="animation-delay:-1s"/>
+     <circle cx="560" cy="300" r="150" fill="url(#warm)" class="pulse" style="animation-delay:-.5s"/>
+     <circle cx="600" cy="540" r="120" fill="url(#hot)" class="pulse" style="animation-delay:-1.6s"/>
+     <circle cx="430" cy="180" r="90" fill="#2b0f6b"/>
+    </g>
+    <path d="M150 480V360l100-80 100 80v120M520 640V520h160v120" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="3"/>
+    <g stroke="#fff" stroke-width="3" opacity=".9"><circle cx="390" cy="360" r="40" fill="none"/><path d="M390 300v30M390 390v30M330 360h30M420 360h30"/></g>
+    <g class="pl blink" style="--pc:#ffd23d"><text x="390" y="270">Punto caliente</text></g>
+    <path d="M70 110h50M70 110v50M710 110h-50M710 110v50M70 610h50M70 610v-50M710 610h-50M710 610v-50" stroke="#fff" stroke-width="4" fill="none"/>
+   </g>
+   <g class="a r"><rect x="790" y="80" width="44" height="560" rx="22" fill="url(#therm)"/>
+    <text x="812" y="62" class="t-lab" text-anchor="middle">Caliente</text><text x="812" y="680" class="t-lab" text-anchor="middle">Frío</text></g>
+  </svg>
+ </div>
+</section>
+
+<!-- 12 · Microondas -->
+<section class="slide" data-c="#00c6ff,#3d8bff,#2de2a6" data-refs="3,2,5">
+ <div class="sl cols">
+  <div>
+   <div class="eb a">11 · Microondas y radio · 1 mm en adelante</div>
+   <h2 class="h a">Las microondas <em>atraviesan las nubes</em>.</h2>
+   <div class="chips">
+    <span class="chip a"><svg class="ic"><use href="#i-radar"/></svg>Activo: radar SAR</span>
+    <span class="chip a"><svg class="ic"><use href="#i-target"/></svg>Pasivo: radiómetro</span>
+    <span class="chip a"><svg class="ic"><use href="#i-drop"/></svg>Derrames de petróleo</span>
+    <span class="chip a"><svg class="ic"><use href="#i-bolt"/></svg>Radio: baja los datos a Tierra</span>
+   </div>
+  </div>
+  <svg class="gfx" viewBox="0 0 900 780">
+   <g class="float"><g transform="translate(450 90) scale(1.5)"><use href="#satG"/></g></g>
+   <g class="bob"><g fill="#eef2ff" opacity=".93"><circle cx="300" cy="360" r="80"/><circle cx="410" cy="330" r="105"/><circle cx="530" cy="360" r="85"/><circle cx="620" cy="385" r="60"/><rect x="220" y="360" width="460" height="85" rx="42"/></g></g>
+   <path d="M410 140L300 330L230 180" stroke="#ff7a45" stroke-width="7" fill="none" class="flow" marker-end="url(#arw)"/>
+   <path d="M490 140L620 650" stroke="#00c6ff" stroke-width="9" fill="none" class="flow" filter="url(#glw)"/>
+   <path d="M650 650L520 140" stroke="#2de2a6" stroke-width="5" fill="none" class="flow" marker-end="url(#arw)" opacity=".8"/>
+   <path d="M0 660Q450 610 900 660V780H0z" fill="url(#gC)" opacity=".85" class="a f"/>
+   <circle cx="635" cy="652" r="30" fill="none" stroke="#00c6ff" stroke-width="4" class="rip"/>
+   <g class="a"><g class="pl" style="--pc:#ff7a45"><text x="170" y="270">Visible / IR: rebota</text></g></g>
+   <g class="a"><g class="pl" style="--pc:#00c6ff"><text x="760" y="560">Microondas: pasa</text></g></g>
+  </svg>
+ </div>
+</section>
+
+<!-- 13 · Pasivo vs activo -->
+<section class="slide" data-c="#ffc857,#00c6ff,#ff4fa3" data-refs="5">
+ <div class="sl stack">
+  <div><div class="eb a">12 · Tipos de sensor</div>
+  <h2 class="h a">Pasivo usa la luz del Sol; <em>activo emite la suya</em>.</h2></div>
+  <div class="grid fill" style="grid-template-columns:1fr 1fr;gap:40px">
+   <div class="card accy a" style="display:flex;flex-direction:column">
+    <div class="ttl" style="margin:0">Pasivo</div>
+    <svg viewBox="0 0 700 330" style="flex:1;width:100%">
+     <circle cx="80" cy="80" r="80" fill="url(#sunG)" class="pulse"/><circle cx="80" cy="80" r="36" fill="#ffd56b"/>
+     <path d="M0 300Q350 250 700 300V330H0z" fill="url(#gC)" opacity=".8"/>
+     <g transform="translate(590 70)"><use href="#satG"/></g>
+     <path d="M130 120L340 270L560 110" stroke="#ffc857" stroke-width="6" fill="none" class="flow" marker-end="url(#arw)"/>
+     <path d="M420 280q15-25 0-50t5-50 30-60" stroke="#ff4fa3" stroke-width="5" fill="none" class="flow" opacity=".8"/>
+    </svg>
+    <div class="chips" style="margin-top:10px"><span class="chip"><svg class="ic"><use href="#i-camera"/></svg>RGB · multiespectral</span><span class="chip"><svg class="ic"><use href="#i-moon"/></svg>De noche: solo térmico</span></div>
+   </div>
+   <div class="card acc2 a" style="display:flex;flex-direction:column">
+    <div class="ttl" style="margin:0">Activo</div>
+    <svg viewBox="0 0 700 330" style="flex:1;width:100%">
+     <path d="M0 300Q350 250 700 300V330H0z" fill="url(#gC)" opacity=".8"/>
+     <g transform="translate(350 60)"><use href="#satG"/></g>
+     <g stroke="#00c6ff" stroke-width="5" fill="none">
+      <circle cx="350" cy="90" r="60" class="rip"/><circle cx="350" cy="90" r="60" class="rip" style="animation-delay:-.8s"/><circle cx="350" cy="90" r="60" class="rip" style="animation-delay:-1.6s"/></g>
+     <path d="M350 100V270" stroke="#00c6ff" stroke-width="6" class="flow"/>
+     <path d="M380 270L380 110" stroke="#2de2a6" stroke-width="4" class="flow" marker-end="url(#arw)"/>
+    </svg>
+    <div class="chips" style="margin-top:10px"><span class="chip"><svg class="ic"><use href="#i-radar"/></svg>SAR · LiDAR</span><span class="chip"><svg class="ic"><use href="#i-flash"/></svg>Como una cámara con flash</span></div>
+   </div>
+  </div>
+ </div>
+</section>
+
+<!-- 14 · Plataformas -->
+<section class="slide" data-c="#3d8bff,#2de2a6,#a06bff" data-refs="5">
+ <div class="sl cols">
+  <div>
+   <div class="eb a">13 · Plataformas</div>
+   <h2 class="h a">Del suelo al espacio: <em>proximal</em> a <em>distal</em>.</h2>
+   <div class="grid" style="grid-template-columns:1fr 1fr;margin-top:48px">
+    <div class="card accg a"><svg class="ic"><use href="#i-target"/></svg><div class="ttl">Proximal</div><div class="lab">Mano, torre, tractor</div></div>
+    <div class="card acc1 a"><svg class="ic"><use href="#i-sat"/></svg><div class="ttl">Distal</div><div class="lab">Avión, dron, satélite</div></div>
+   </div>
+   <div class="chips"><span class="chip a"><svg class="ic"><use href="#i-coin"/></svg>El costo decide la plataforma</span></div>
+  </div>
+  <svg class="gfx" viewBox="0 0 900 800">
+   <clipPath id="skyc"><rect x="0" y="0" width="780" height="800" rx="40"/></clipPath>
+   <g clip-path="url(#skyc)" class="a f">
+    <rect width="780" height="800" fill="url(#sky)"/>
+    <g fill="#fff"><circle cx="80" cy="60" r="2"/><circle cx="300" cy="40" r="2"/><circle cx="520" cy="90" r="1.5"/><circle cx="700" cy="50" r="2"/><circle cx="200" cy="140" r="1.5"/></g>
+    <path d="M0 690Q390 650 780 690V800H0z" fill="#16805f"/>
+   </g>
+   <g stroke="rgba(255,255,255,.3)" stroke-width="2" stroke-dasharray="8 10"><line x1="0" y1="250" x2="780" y2="250"/><line x1="0" y1="560" x2="780" y2="560"/></g>
+   <g class="t-lab" style="font-size:26px;font-weight:800" fill="#fff"><text x="30" y="60" class="a">ESPACIO</text><text x="30" y="300" class="a">AIRE</text><text x="30" y="610" class="a">SUELO</text></g>
+   <g class="float"><g transform="translate(520 140) scale(1.4)"><use href="#satG"/></g></g>
+   <g><animateTransform attributeName="transform" type="translate" values="-160 0;980 0" dur="14s" repeatCount="indefinite"/><g transform="translate(0 360) scale(1.1)"><use href="#planeG"/></g></g>
+   <g class="bob"><g transform="translate(560 470)"><use href="#droneG"/></g></g>
+   <path d="M560 490L500 680H620z" fill="#2de2a6" opacity=".18" class="pulse"/>
+   <g stroke="#e8ecff" stroke-width="5" fill="none" class="a"><path d="M220 760V590M190 760l30-170 30 170M196 700h48M204 650h32"/><path d="M220 590h40"/></g>
+   <circle cx="266" cy="590" r="9" fill="#ffc857" class="a"/>
+   <path d="M266 600L300 690" stroke="#ffc857" stroke-width="3" stroke-dasharray="5 6" class="flow"/>
+   <defs><linearGradient id="pd" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#2de2a6"/><stop offset="1" stop-color="#6d4bff"/></linearGradient></defs>
+   <rect x="830" y="40" width="16" height="720" rx="8" fill="url(#pd)" class="vbar"/>
+   <text class="t-lab" transform="translate(880 400) rotate(90)" text-anchor="middle" fill="#fff">Proximal  →  Distal</text>
+  </svg>
+ </div>
+</section>
+
+<!-- 15 · Órbitas -->
+<section class="slide" data-c="#6d4bff,#00c6ff,#ffc857" data-refs="5">
+ <div class="sl cols">
+  <div>
+   <div class="eb a">14 · Órbitas</div>
+   <h2 class="h a">Una órbita <em>vigila fija</em>; la otra <em>barre el planeta</em>.</h2>
+   <div class="grid" style="grid-template-columns:1fr 1fr;margin-top:48px">
+    <div class="card acc2 a"><div class="big" style="font-size:66px"><span class="cnt" data-to="36000"></span><small>km</small></div><div class="lab">Geoestacionaria</div></div>
+    <div class="card accy a"><div class="big" style="font-size:66px"><span class="cnt" data-to="830"></span>–<span class="cnt" data-to="870"></span><small>km</small></div><div class="lab">Polar heliosíncrona</div></div>
+   </div>
+   <div class="chips"><span class="chip a"><svg class="ic"><use href="#i-clock"/></svg>Misma hora solar local</span></div>
+  </div>
+  <svg class="gfx" viewBox="0 0 900 800">
+   <circle cx="450" cy="400" r="330" fill="none" stroke="url(#gA)" stroke-width="3" stroke-dasharray="8 12" class="dr"/>
+   <g><animateMotion dur="20s" repeatCount="indefinite" path="M120,400a330,330 0 1,0 660,0a330,330 0 1,0 -660,0"/><use href="#satG"/></g>
+   <circle cx="450" cy="400" r="190" fill="url(#glow)" class="pulse"/>
+   <clipPath id="ec2"><circle cx="450" cy="400" r="110"/></clipPath>
+   <circle cx="450" cy="400" r="110" fill="url(#earth)"/>
+   <g clip-path="url(#ec2)" opacity=".85"><g style="animation:cn 30s linear infinite"><use href="#cnt1" x="-20"/><use href="#cnt1" x="280"/></g></g>
+   <g transform="rotate(14 450 400)"><ellipse cx="450" cy="400" rx="46" ry="165" fill="none" stroke="#ffc857" stroke-width="3" stroke-dasharray="6 8"/>
+    <g><animateMotion dur="6s" repeatCount="indefinite" path="M450,235a46,165 0 1,1 0,330a46,165 0 1,1 0,-330"/><g transform="scale(.55)"><use href="#satG"/></g></g></g>
+   <g class="a"><g class="pl" style="--pc:#00c6ff"><text x="450" y="40">Geoestacionaria · ve siempre la misma zona</text></g></g>
+   <g class="a"><g class="pl" style="--pc:#ffc857"><text x="680" y="250">Casi polar</text></g></g>
+   <text x="880" y="780" class="note" text-anchor="end" fill="#aab4de" style="font-size:18px">No a escala</text>
+  </svg>
+ </div>
+</section>
+
+<!-- 16 · Resoluciones -->
+<section class="slide" data-c="#ff4fa3,#6d4bff,#2de2a6" data-refs="5">
+ <div class="sl stack">
+  <div><div class="eb a">15 · Las cuatro resoluciones</div>
+  <h2 class="h a">Cuatro resoluciones definen <em>qué tan bien ve</em> un sensor.</h2></div>
+  <div class="grid fill" style="grid-template-columns:repeat(4,1fr)">
+   <div class="card acc3 a" style="display:flex;flex-direction:column"><div class="ttl" style="margin:0">Espacial</div>
+    <svg viewBox="0 0 300 220" style="flex:1;width:100%;margin:18px 0" id="resSp"></svg><div class="lab">El objeto más pequeño visible</div></div>
+   <div class="card acc1 a" style="display:flex;flex-direction:column"><div class="ttl" style="margin:0">Espectral</div>
+    <svg viewBox="0 0 300 220" style="flex:1;width:100%;margin:18px 0" id="resSe"></svg><div class="lab">Multi: varias · Hiper: cientos</div></div>
+   <div class="card accg a" style="display:flex;flex-direction:column"><div class="ttl" style="margin:0">Radiométrica</div>
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center"><div class="big"><span class="cnt" data-to="256"></span></div>
+    <div style="display:flex;height:46px;border-radius:12px;overflow:hidden;margin-top:18px">
+     <i style="flex:1;background:#000"></i><i style="flex:1;background:#242424"></i><i style="flex:1;background:#494949"></i><i style="flex:1;background:#6d6d6d"></i><i style="flex:1;background:#929292"></i><i style="flex:1;background:#b6b6b6"></i><i style="flex:1;background:#dbdbdb"></i><i style="flex:1;background:#fff"></i></div></div>
+    <div class="lab">Niveles con 8 bits</div></div>
+   <div class="card accy a" style="display:flex;flex-direction:column"><div class="ttl" style="margin:0">Temporal</div>
+    <svg viewBox="0 0 300 220" style="flex:1;width:100%;margin:18px 0" id="resTe"></svg><div class="lab">Revisita cada varios días</div></div>
+  </div>
+ </div>
+</section>
+
+<!-- 17 · Meteorológicos -->
+<section class="slide" data-c="#3d8bff,#00c6ff,#ff7a45" data-refs="5,4">
+ <div class="sl stack">
+  <div><div class="eb a">16 · Satélites meteorológicos</div>
+  <h2 class="h a">De TIROS-1 a GOES: <em>una imagen cada 15 minutos</em>.</h2></div>
+  <div class="grid fill" style="grid-template-columns:repeat(3,1fr);grid-template-rows:1fr 1fr">
+   <div class="card acc2 a"><svg class="ic"><use href="#i-sat"/></svg><div class="big"><span class="cnt" data-to="1960" data-sep="0"></span></div><div class="lab">TIROS-1, el primero</div></div>
+   <div class="card acc1 a"><svg class="ic"><use href="#i-target"/></svg><div class="big"><span class="cnt" data-to="36000"></span><small>km</small></div><div class="lab">Altura de GOES</div></div>
+   <div class="card acc3 a" style="display:flex;gap:30px;align-items:center">
+    <svg viewBox="0 0 120 120" style="width:150px;flex:none"><circle cx="60" cy="60" r="48" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="18"/><circle cx="60" cy="60" r="48" fill="none" stroke="url(#gB)" stroke-width="18" pathLength="100" class="ring" style="--v:33.3;--i:2"/></svg>
+    <div><div class="big">⅓</div><div class="lab">De la Tierra ve cada GOES</div></div></div>
+   <div class="card accy a"><svg class="ic"><use href="#i-clock"/></svg><div class="big"><span class="cnt" data-to="15"></span><small>min</small></div><div class="lab">Entre imágenes</div></div>
+   <div class="card accg a"><svg class="ic"><use href="#i-layers"/></svg><div class="big"><span class="cnt" data-to="19"></span><small>canales</small></div><div class="lab">Sondeador GOES</div></div>
+   <div class="card acco a"><svg class="ic"><use href="#i-flame"/></svg><div class="big"><span class="cnt" data-to="3000"></span><small>km</small></div><div class="lab">Franja AVHRR · fuego, ceniza, mar</div></div>
+  </div>
+ </div>
+</section>
+
+<!-- 18 · Radar -->
+<section class="slide" data-c="#2de2a6,#00c6ff,#6d4bff" data-refs="28,24,40,30,25">
+ <div class="sl cols">
+  <div>
+   <div class="eb a">17 · Radar de apertura sintética</div>
+   <h2 class="h a">Onda más larga, <em>más penetra el bosque</em>.</h2>
+   <div class="chips">
+    <span class="chip a"><svg class="ic"><use href="#i-radar"/></svg>Activo: día, noche y nubes</span>
+    <span class="chip a"><svg class="ic"><use href="#i-sat"/></svg><b>BIOMASS</b> · banda P</span>
+    <span class="chip a"><svg class="ic"><use href="#i-sat"/></svg><b>NISAR</b> · bandas L + S</span>
+   </div>
+  </div>
+  <svg class="gfx" viewBox="0 0 900 800">
+   <clipPath id="wclip"><rect x="250" y="40" width="640" height="300"/></clipPath>
+   <g style="font-size:30px;font-weight:800" fill="#fff">
+    <text x="0" y="110" class="a">P · <tspan class="cnt" data-to="70"></tspan> cm</text>
+    <text x="0" y="210" class="a">L · <tspan class="cnt" data-to="24"></tspan> cm</text>
+    <text x="0" y="310" class="a">S · ~<tspan class="cnt" data-to="10"></tspan> cm</text></g>
+   <g clip-path="url(#wclip)">
+    <path class="sine wave" data-per="210" data-y="100" stroke="#2de2a6" stroke-width="6" fill="none" filter="url(#glw)"/>
+    <path class="sine wave" data-per="72" data-y="200" stroke="#00c6ff" stroke-width="6" fill="none" filter="url(#glw)"/>
+    <path class="sine wave" data-per="30" data-y="300" stroke="#a06bff" stroke-width="6" fill="none" filter="url(#glw)"/></g>
+   <g class="a f">
+    <g fill="#5a3a2a"><rect x="180" y="560" width="22" height="200"/><rect x="420" y="540" width="26" height="220"/><rect x="660" y="560" width="22" height="200"/></g>
+    <g fill="#169a63"><ellipse cx="190" cy="520" rx="140" ry="90"/><ellipse cx="432" cy="490" rx="160" ry="105"/><ellipse cx="672" cy="520" rx="145" ry="92"/></g>
+    <g fill="#2de2a6" opacity=".5"><ellipse cx="160" cy="490" rx="60" ry="35"/><ellipse cx="400" cy="450" rx="70" ry="40"/><ellipse cx="640" cy="490" rx="60" ry="35"/></g>
+    <path d="M0 760H900" stroke="#8a6a4a" stroke-width="10"/></g>
+   <path d="M760 360V740" stroke="#2de2a6" stroke-width="10" class="dr" marker-end="url(#arw)" style="--i:2"/>
+   <path d="M560 360V600" stroke="#00c6ff" stroke-width="10" class="dr" marker-end="url(#arw)" style="--i:1"/>
+   <path d="M330 360V450" stroke="#a06bff" stroke-width="10" class="dr" marker-end="url(#arw)"/>
+   <g class="a" style="--i:6"><g class="pl" style="--pc:#2de2a6"><text x="810" y="790">P · troncos</text></g></g>
+   <g class="a" style="--i:5"><g class="pl" style="--pc:#00c6ff"><text x="560" y="650">L · dosel denso</text></g></g>
+   <g class="a" style="--i:4"><g class="pl" style="--pc:#a06bff"><text x="330" y="395">S · copas</text></g></g>
+  </svg>
+ </div>
+</section>
+
+<!-- 19 · LiDAR / GEDI -->
+<section class="slide" data-c="#2de2a6,#ff4fa3,#ffc857" data-refs="20,22,23,35">
+ <div class="sl cols">
+  <div>
+   <div class="eb a">18 · LiDAR · GEDI e ICESat-2</div>
+   <h2 class="h m a">Láseres desde la Estación Espacial <em>miden la altura</em> de los bosques.</h2>
+   <div class="grid" style="grid-template-columns:1fr 1fr;margin-top:40px;gap:22px">
+    <div class="card accg a" style="padding:26px"><div class="big" style="font-size:60px"><span class="cnt" data-to="25"></span><small>m</small></div><div class="lab">Huella del láser</div></div>
+    <div class="card acc3 a" style="padding:26px"><div class="big" style="font-size:60px"><span class="cnt" data-to="51.6" data-dec="1"></span><small>° N–S</small></div><div class="lab">Cobertura en latitud</div></div>
+    <div class="card accy a" style="padding:26px"><div class="big" style="font-size:60px">&gt;<span class="cnt" data-to="10"></span><small>mil mill.</small></div><div class="lab">Formas de onda previstas</div></div>
+    <div class="card acc2 a" style="padding:26px"><div class="big" style="font-size:60px">~<span class="cnt" data-to="4"></span><small>%</small></div><div class="lab">De la tierra firme en 2 años</div></div>
+   </div>
+  </div>
+  <svg class="gfx" viewBox="0 0 900 800">
+   <g class="float"><g transform="translate(300 90)"><rect x="-90" y="-8" width="180" height="16" rx="4" fill="#e8ecff"/><g fill="#3d8bff" stroke="#9cc9ff" stroke-width="2"><rect x="-150" y="-50" width="50" height="100"/><rect x="100" y="-50" width="50" height="100"/><rect x="-200" y="-50" width="40" height="100"/><rect x="160" y="-50" width="40" height="100"/></g><rect x="-22" y="-20" width="44" height="40" rx="6" fill="#e8ecff"/></g></g>
+   <g stroke="#2de2a6" stroke-width="4" class="flow" filter="url(#glw)"><path d="M290 120L170 560"/><path d="M300 120L300 540"/><path d="M310 120L430 560"/></g>
+   <g class="a f">
+    <g fill="#169a63"><path d="M120 640l50-120 50 120z"/><path d="M240 640l60-150 60 150z"/><path d="M380 640l50-110 50 110z"/><path d="M60 640l35-80 35 80z"/><path d="M470 640l35-90 35 90z"/></g>
+    <path d="M20 640H580" stroke="#8a6a4a" stroke-width="8"/></g>
+   <g class="a r">
+    <rect x="620" y="440" width="260" height="230" rx="20" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.2)"/>
+    <line x1="650" y1="460" x2="650" y2="650" class="ax"/>
+    <text x="750" y="425" class="t-lab" text-anchor="middle">Forma de onda</text></g>
+   <path class="dr" style="--i:3" d="M650 470C670 470 690 480 760 500S690 540 680 560S720 590 700 605C690 612 840 625 690 640L650 650" fill="none" stroke="#ff4fa3" stroke-width="5"/>
+   <g class="t-lab a" style="--i:5;font-size:18px"><text x="790" y="505">Copas</text><text x="740" y="568">Ramas</text><text x="780" y="628">Suelo</text></g>
+   <path d="M560 540h50" stroke="rgba(255,255,255,.4)" stroke-dasharray="4 6" stroke-width="2"/>
+   <g class="a" style="--i:7"><g class="pl" style="--pc:#ffc857"><text x="300" y="730">ICESat-2 complementa en bosques boreales</text></g></g>
+  </svg>
+ </div>
+</section>
+
+<!-- 20 · Drones: nivel intermedio -->
+<section class="slide" data-c="#ff4fa3,#ffc857,#6d4bff" data-refs="37,33">
+ <style>.gb{display:flex;align-items:flex-end;gap:16px;height:100%;flex:1;justify-content:center}.gb .vbar{width:90px;height:var(--h);border-radius:20px 20px 6px 6px;background:linear-gradient(180deg,var(--k1),var(--k2))}</style>
+ <div class="sl cols">
+  <div>
+   <div class="eb a">19 · Drones (UAV)</div>
+   <h2 class="h a">El dron <em>llena el hueco</em> entre el suelo y el satélite.</h2>
+   <div class="chips">
+    <span class="chip a"><svg class="ic"><use href="#i-zoom"/></svg>Más resolución</span>
+    <span class="chip a"><svg class="ic"><use href="#i-clock"/></svg>Entrega rápida</span>
+    <span class="chip a"><svg class="ic"><use href="#i-drone"/></svg>Baja altitud</span>
+    <span class="chip a"><svg class="ic"><use href="#i-layers"/></svg>Complementa, no reemplaza</span>
+   </div>
+  </div>
+  <div style="height:720px;display:flex;flex-direction:column">
+   <div style="display:flex;gap:30px;justify-content:center;margin-bottom:24px" class="a">
+    <span class="chip"><i style="width:20px;height:20px;border-radius:6px;background:linear-gradient(#ff4fa3,#a01060)"></i>Detalle</span>
+    <span class="chip"><i style="width:20px;height:20px;border-radius:6px;background:linear-gradient(#00c6ff,#1a3fa6)"></i>Cobertura</span></div>
+   <div style="flex:1;display:flex;gap:30px;border-bottom:3px solid rgba(255,255,255,.2)">
+    <div class="gb"><div class="vbar" style="--h:100%;--k1:#ff4fa3;--k2:#a01060"></div><div class="vbar" style="--h:8%;--k1:#00c6ff;--k2:#1a3fa6;--i:1"></div></div>
+    <div class="gb"><div class="vbar" style="--h:80%;--k1:#ff4fa3;--k2:#a01060;--i:2"></div><div class="vbar" style="--h:38%;--k1:#00c6ff;--k2:#1a3fa6;--i:3"></div></div>
+    <div class="gb"><div class="vbar" style="--h:30%;--k1:#ff4fa3;--k2:#a01060;--i:4"></div><div class="vbar" style="--h:100%;--k1:#00c6ff;--k2:#1a3fa6;--i:5"></div></div>
+   </div>
+   <div style="display:flex;gap:30px;margin-top:18px">
+    <div class="lab" style="flex:1;text-align:center;font-size:28px;color:#fff">Proximal</div><div class="lab" style="flex:1;text-align:center;font-size:28px;color:var(--c3)">Dron</div><div class="lab" style="flex:1;text-align:center;font-size:28px;color:#fff">Satélite</div></div>
+   <div class="note" style="text-align:right;margin-top:10px">Comparación cualitativa</div>
+  </div>
+ </div>
+</section>
+
+<!-- 21 · Sensores de dron -->
+<section class="slide" data-c="#a06bff,#00c6ff,#ff4fa3" data-refs="37,35,32,8,36">
+ <div class="sl stack">
+  <div><div class="eb a">20 · Sensores a bordo</div>
+  <h2 class="h a">Seis sensores, <em>seis lecturas</em> de la misma parcela.</h2></div>
+  <div class="grid fill" style="grid-template-columns:repeat(3,1fr);grid-template-rows:1fr 1fr">
+   <div class="card acc2 a sens" data-on="1"><svg class="ic"><use href="#i-camera"/></svg><div class="ttl">RGB</div><div class="lab">Ortomosaicos y modelos 3D</div></div>
+   <div class="card accg a sens" data-on="1,2"><svg class="ic"><use href="#i-leaf"/></svg><div class="ttl">Multiespectral</div><div class="lab">4–10 bandas · vegetación</div></div>
+   <div class="card acc1 a sens" data-on="1,2,3"><svg class="ic"><use href="#i-layers"/></svg><div class="ttl">Hiperespectral</div><div class="lab">Cientos de bandas · especies, agua, minerales</div></div>
+   <div class="card acco a sens" data-on="4"><svg class="ic"><use href="#i-thermo"/></svg><div class="ttl">Térmico</div><div class="lab">Temperatura de superficie</div></div>
+   <div class="card acc3 a sens" data-act="Láser"><svg class="ic"><use href="#i-laser"/></svg><div class="ttl">LiDAR</div><div class="lab">Superficies 3D y estructura</div></div>
+   <div class="card accy a sens" data-on="5" data-act="Microondas"><svg class="ic"><use href="#i-radar"/></svg><div class="ttl">Radar / SAR</div><div class="lab">Objetos y estructuras bajo suelo</div></div>
+  </div>
+ </div>
+</section>
+
+<!-- 22 · Costos -->
+<section class="slide" data-c="#ffc857,#ff4fa3,#2de2a6" data-refs="34">
+ <div class="sl cols r">
+  <div>
+   <div class="eb a">21 · Ventaja que abarata</div>
+   <h2 class="h a">Un LiDAR de dron pasó a <em>unos 12,000 dólares</em>.</h2>
+   <div class="chips">
+    <span class="chip a"><svg class="ic"><use href="#i-weight"/></svg>Cubert S185: solo <b><span class="cnt" data-to="490"></span> g</b></span>
+    <span class="chip a"><svg class="ic"><use href="#i-target"/></svg>Exactitud del DJI L1: por verificar</span>
+   </div>
+  </div>
+  <div class="hbars hb">
+   <div class="lab a">Precio aproximado en dólares</div>
+   <div class="a"><div class="row"><span class="nm">LiDAR de dron típico</span><span class="vl">$<span class="cnt" data-to="120000"></span>–<span class="cnt" data-to="170000"></span></span></div><div class="tr"><div class="bar" style="--x:70.6%;--w:29.4%;--k1:#ff4d6d;--k2:#ff4fa3"></div></div></div>
+   <div class="a"><div class="row"><span class="nm">Hiperespectral Cubert S185</span><span class="vl">$<span class="cnt" data-to="88000"></span></span></div><div class="tr"><div class="bar" style="--w:51.8%;--k1:#6d4bff;--k2:#00c6ff;--i:1"></div></div></div>
+   <div class="a"><div class="row"><span class="nm">DJI L1 (LiDAR + cámara)</span><span class="vl" style="color:var(--g)">$<span class="cnt" data-to="12000"></span></span></div><div class="tr"><div class="bar" style="--w:7.1%;--k1:#2de2a6;--k2:#00c6ff;--i:2"></div></div></div>
+  </div>
+ </div>
+</section>
+
+<!-- 23 · Limitaciones -->
+<section class="slide" data-c="#ff4d6d,#ff7a45,#6d4bff" data-refs="34,33,37,38">
+ <div class="sl stack">
+  <div><div class="eb a">22 · Limitaciones</div>
+  <h2 class="h a">Cinco límites: <em>costo, carga, luz, datos e integración</em>.</h2></div>
+  <div class="grid fill lim" style="grid-template-columns:repeat(5,1fr)">
+   <div class="card acc3 a" style="display:flex;flex-direction:column;justify-content:space-between"><svg class="ic"><use href="#i-coin"/></svg><div><div class="big" style="font-size:54px">$<span class="cnt" data-to="88000"></span></div><div class="ttl">Costo</div><div class="lab">Cámara hiperespectral</div></div></div>
+   <div class="card acco a" style="display:flex;flex-direction:column;justify-content:space-between"><svg class="ic"><use href="#i-weight"/></svg><div><div class="big" style="font-size:54px">↓<small>sensibilidad</small></div><div class="ttl">Carga útil</div><div class="lab">Térmicos ligeros sin enfriar</div></div></div>
+   <div class="card accy a" style="display:flex;flex-direction:column;justify-content:space-between"><svg class="ic"><use href="#i-sun"/></svg><div><div class="big" style="font-size:54px">±<span class="cnt" data-to="2"></span><small>h</small></div><div class="ttl">Luz</div><div class="lab">Volar cerca del mediodía solar</div></div></div>
+   <div class="card acc1 a" style="display:flex;flex-direction:column;justify-content:space-between"><svg class="ic"><use href="#i-db"/></svg><div><div class="big" style="font-size:54px"><span class="cnt" data-to="100"></span>s<small>GB</small></div><div class="ttl">Datos</div><div class="lab">Por misión LiDAR o hiper</div></div></div>
+   <div class="card acc2 a" style="display:flex;flex-direction:column;justify-content:space-between"><svg class="ic"><use href="#i-plug"/></svg><div><div class="big" style="font-size:54px">+GPS</div><div class="ttl">Integración</div><div class="lab">Sensores aparte del dron</div></div></div>
+  </div>
+ </div>
+</section>
+
+<!-- 24 · Landsat -->
+<section class="slide" data-c="#ff7a45,#ff4fa3,#3d8bff" data-refs="16,14,17,18,19">
+ <div class="sl cols r">
+  <div>
+   <div class="eb a">23 · Misión · Landsat 8 y 9 (TIRS)</div>
+   <h2 class="h a">Landsat mira el calor <em>desde 1978</em>; hoy con dos bandas.</h2>
+   <div class="chips">
+    <span class="chip a"><b>B10</b> 10.6–11.2 µm</span>
+    <span class="chip a"><b>B11</b> 11.5–12.5 µm</span>
+    <span class="chip a"><svg class="ic"><use href="#i-drop"/></svg>Consumo de agua campo a campo</span>
+   </div>
+  </div>
+  <div style="height:720px;display:flex;flex-direction:column">
+   <div class="lab a" style="text-align:center;margin-bottom:10px">Píxel térmico en metros · menor es más detalle</div>
+   <div class="vbars">
+    <div class="vb"><div class="vl"><span class="cnt" data-to="240"></span></div><div class="vbar" style="--h:100%;--k1:#ff7a45;--k2:#8c2a12"></div><div class="nm">Landsat 3</div></div>
+    <div class="vb"><div class="vl"><span class="cnt" data-to="120"></span></div><div class="vbar" style="--h:50%;--k1:#ff4fa3;--k2:#8c1050;--i:1"></div><div class="nm">Landsat 4–5</div></div>
+    <div class="vb"><div class="vl"><span class="cnt" data-to="60"></span></div><div class="vbar" style="--h:25%;--k1:#a06bff;--k2:#3d1a8c;--i:2"></div><div class="nm">Landsat 7</div></div>
+    <div class="vb"><div class="vl" style="color:var(--g)"><span class="cnt" data-to="100"></span></div><div class="vbar" style="--h:41.7%;--k1:#2de2a6;--k2:#0b6b5a;--i:3"></div><div class="nm">Landsat 8–9 · 2 bandas</div></div>
+   </div>
+  </div>
+ </div>
+</section>
+
+<!-- 25 · ECOSTRESS -->
+<section class="slide" data-c="#2de2a6,#ff7a45,#00c6ff" data-refs="10,11,12,13">
+ <style>.chain{display:flex;align-items:center;gap:10px}.chain .card{flex:1;padding:20px 22px;border-radius:24px}.chain .ttl{font-size:26px;margin:0}.chain .lab{font-size:20px}.chain>span{font-size:34px;color:var(--c2)}</style>
+ <div class="sl cols">
+  <div>
+   <div class="eb a">24 · Misión · ECOSTRESS</div>
+   <h2 class="h a">Una planta con sed <em>se calienta</em>; ECOSTRESS lo detecta.</h2>
+   <div class="chips">
+    <span class="chip a"><svg class="ic"><use href="#i-sat"/></svg>Estación Espacial · 2018</span>
+    <span class="chip a"><svg class="ic"><use href="#i-layers"/></svg>5 térmicas + 1 SWIR</span>
+    <span class="chip a"><svg class="ic"><use href="#i-zoom"/></svg>Ve el campo de un agricultor</span>
+   </div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:26px;height:800px">
+   <svg viewBox="0 0 860 470" style="flex:1;width:100%">
+    <g class="a z">
+     <path d="M220 430V240" stroke="#0f8a5f" stroke-width="10"/>
+     <g fill="#2de2a6"><ellipse cx="170" cy="300" rx="60" ry="22" transform="rotate(-25 170 300)"/><ellipse cx="270" cy="270" rx="60" ry="22" transform="rotate(25 270 270)"/><ellipse cx="170" cy="230" rx="55" ry="20" transform="rotate(-35 170 230)"/><ellipse cx="270" cy="200" rx="55" ry="20" transform="rotate(35 270 200)"/></g>
+     <g fill="#00c6ff" class="float"><use href="#i-drop" x="90" y="120" width="40" height="40"/><use href="#i-drop" x="310" y="110" width="34" height="34"/></g>
+     <rect x="340" y="200" width="30" height="220" rx="15" fill="rgba(255,255,255,.1)"/><rect x="345" y="330" width="20" height="85" rx="10" fill="#00c6ff" class="vbar"/>
+    </g>
+    <g class="a z" style="--i:2">
+     <path d="M620 430V260q0-30 20-50" stroke="#a6702a" stroke-width="10" fill="none"/>
+     <g fill="#ff7a45"><ellipse cx="575" cy="330" rx="55" ry="20" transform="rotate(40 575 330)"/><ellipse cx="665" cy="320" rx="55" ry="20" transform="rotate(-40 665 320)"/><ellipse cx="660" cy="230" rx="50" ry="18" transform="rotate(55 660 230)"/></g>
+     <g stroke="#ff4d2d" stroke-width="5" fill="none" class="blink"><path d="M560 160q10-15 0-30t0-30M620 140q10-15 0-30t0-30M680 160q10-15 0-30t0-30"/></g>
+     <rect x="740" y="200" width="30" height="220" rx="15" fill="rgba(255,255,255,.1)"/><rect x="745" y="230" width="20" height="185" rx="10" fill="#ff4d2d" class="vbar" style="--i:3"/>
+    </g>
+    <path d="M60 432H820" stroke="rgba(255,255,255,.25)" stroke-width="3"/>
+    <g class="a" style="--i:4"><g class="pl" style="--pc:#00c6ff"><text x="230" y="40">Con agua: fresca</text></g></g>
+    <g class="a" style="--i:5"><g class="pl" style="--pc:#ff4d2d"><text x="640" y="40">Sin agua: caliente</text></g></g>
+   </svg>
+   <div class="chain">
+    <div class="card acc2 a"><div class="ttl">N1</div><div class="lab">Radiancia</div></div><span class="a">›</span>
+    <div class="card acco a"><div class="ttl">N2</div><div class="lab">Temperatura · 70 m</div></div><span class="a">›</span>
+    <div class="card accg a"><div class="ttl">N3</div><div class="lab">Evapotranspiración</div></div><span class="a">›</span>
+    <div class="card acc3 a"><div class="ttl">N4</div><div class="lab">Estrés hídrico</div></div>
+   </div>
+  </div>
+ </div>
+</section>
+
+<!-- 26 · NISAR y BIOMASS -->
+<section class="slide" data-c="#00c6ff,#2de2a6,#a06bff" data-refs="24,40,25,27,28">
+ <style>.ms{display:flex;flex-direction:column}.ms .grid{grid-template-columns:1fr 1fr;gap:18px;margin-top:26px;flex:1}.ms .grid>div{background:rgba(255,255,255,.05);border-radius:24px;padding:22px 26px;display:flex;flex-direction:column;justify-content:center}.ms .big{font-size:62px}.ms h3{font-size:46px;font-weight:800}.ms h3 small{font-size:24px;color:var(--mut);font-weight:600;margin-left:12px}</style>
+ <div class="sl stack">
+  <div><div class="eb a">25 · Misiones · NISAR y BIOMASS</div>
+  <h2 class="h a">Dos radares para <em>pesar bosques</em> y ver la Tierra moverse.</h2></div>
+  <div class="grid fill" style="grid-template-columns:1fr 1fr;gap:40px">
+   <div class="card acc2 a ms">
+    <h3>NISAR <small>NASA · ISRO</small></h3>
+    <div class="grid">
+     <div><div class="big"><span class="cnt" data-to="24"></span><small>cm</small></div><div class="lab">Banda L</div></div>
+     <div><div class="big">~<span class="cnt" data-to="10"></span><small>cm</small></div><div class="lab">Banda S</div></div>
+     <div><div class="big"><span class="cnt" data-to="12"></span><small>días</small></div><div class="lab">Dos pasadas por ciclo</div></div>
+     <div><div class="big">&lt;<span class="cnt" data-to="1"></span><small>cm</small></div><div class="lab">Cambio de superficie</div></div>
+    </div>
+   </div>
+   <div class="card accg a ms">
+    <h3>BIOMASS <small>ESA</small></h3>
+    <div class="grid">
+     <div><div class="big">~<span class="cnt" data-to="70"></span><small>cm</small></div><div class="lab">Banda P, primera en órbita</div></div>
+     <div><div class="big"><span class="cnt" data-to="12"></span><small>m</small></div><div class="lab">Reflector desplegable</div></div>
+     <div><div class="big"><span class="cnt" data-to="2025" data-sep="0"></span></div><div class="lab">29 abr · Vega-C, Kourou</div></div>
+     <div style="flex-direction:row;align-items:center;gap:18px"><svg class="ic" style="width:64px;height:64px;color:var(--g)"><use href="#i-tree"/></svg><div class="lab" style="color:#fff">Biomasa y altura del bosque</div></div>
+    </div>
+   </div>
+  </div>
+ </div>
+</section>
+
+<!-- 27 · Resumen de misiones -->
+<section class="slide" data-c="#6d4bff,#ff4fa3,#2de2a6">
+ <style>.mrow{display:grid;grid-template-columns:280px 560px 1fr;align-items:center;gap:40px;padding:20px 34px;border-radius:26px}.mrow .ttl{margin:0;font-size:32px}.mrow .strip{margin:0}.mrow .lab{font-size:24px;color:#fff}.mrow .lab b{color:var(--k)}</style>
+ <div class="sl stack" style="gap:26px">
+  <div><div class="eb a">26 · Resumen</div>
+  <h2 class="h a">Cada misión elige <em>la región</em> que revela su objetivo.</h2></div>
+  <div style="display:flex;flex-direction:column;gap:14px">
+   <div class="mrow a" style="padding-top:0;padding-bottom:0"><span></span><div class="strip-l"><span>UV</span><span>VIS</span><span>NIR</span><span>SWIR</span><span>TIR</span><span>MW</span></div><span></span></div>
+   <div class="mrow card acco a" data-on="4"><div class="ttl">Landsat 8–9</div><div class="strip"></div><div class="lab">Temperatura y agua · <b>100 m → 30 m</b></div></div>
+   <div class="mrow card acc3 a" data-on="3,4"><div class="ttl">ECOSTRESS</div><div class="strip"></div><div class="lab">Estrés hídrico · <b>70 m</b></div></div>
+   <div class="mrow card accg a" data-act="LiDAR · láser activo"><div class="ttl">GEDI</div><div class="strip"></div><div class="lab">Altura y biomasa · <b>huella 25 m</b></div></div>
+   <div class="mrow card acc2 a" data-on="5"><div class="ttl">NISAR</div><div class="strip"></div><div class="lab">Biomasa y deformación · <b>bandas L + S</b></div></div>
+   <div class="mrow card acc1 a" data-on="5"><div class="ttl">BIOMASS</div><div class="strip"></div><div class="lab">Biomasa forestal · <b>banda P</b></div></div>
+  </div>
+ </div>
+</section>
+
+<!-- 28 · Referencias: revistas -->
+<section class="slide" data-c="#6d4bff,#00c6ff,#ffc857">
+ <style>.refs{display:grid;gap:14px;align-content:start}.ref{display:flex;align-items:center;gap:18px;padding:16px 22px;border-radius:20px;text-decoration:none;font-size:22px;font-weight:600;line-height:1.25}.ref .n{flex:none;width:52px;height:52px;border-radius:14px;display:grid;place-items:center;font-weight:800;font-size:20px;background:linear-gradient(135deg,var(--c1),var(--c2))}.ref small{display:block;color:var(--mut);font-size:17px;font-weight:600;margin-top:3px}.refs.sm .ref{font-size:17px;padding:10px 14px;gap:12px;border-radius:16px}.refs.sm .ref .n{width:38px;height:38px;font-size:15px;border-radius:10px}.refs.sm .ref small{font-size:14px}</style>
+ <div class="sl stack" style="gap:30px">
+  <div><div class="eb a">Referencias · 1/2</div>
+  <h2 class="h m a"><svg class="ic" style="width:64px;height:64px;vertical-align:-8px;color:var(--c2)"><use href="#i-book"/></svg> Artículos en <em>revistas científicas</em></h2></div>
+  <div class="refs" id="refJ" style="grid-template-columns:1fr 1fr"></div>
+ </div>
+</section>
+
+<!-- 29 · Referencias: instituciones -->
+<section class="slide" data-c="#00c6ff,#2de2a6,#ff4fa3">
+ <div class="sl stack" style="gap:26px">
+  <div><div class="eb a">Referencias · 2/2</div>
+  <h2 class="h m a"><svg class="ic" style="width:64px;height:64px;vertical-align:-8px;color:var(--c2)"><use href="#i-bank"/></svg> Instituciones, guías y <em>prensa</em></h2></div>
+  <div class="refs sm" id="refI" style="grid-template-columns:repeat(4,1fr)"></div>
+ </div>
+</section>
+
+<!-- 30 · Cierre -->
+<section class="slide" data-c="#ff4fa3,#6d4bff,#00c6ff">
+ <div class="sl" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
+  <svg viewBox="0 0 400 120" style="width:520px" class="a z"><path class="sine wave" data-per="80" data-y="60" stroke="url(#gA)" stroke-width="8" fill="none" filter="url(#glw)"/></svg>
+  <h2 class="h xl a" style="margin-top:20px"><em>Gracias</em></h2>
+  <p class="lead a">¿Preguntas?</p>
+  <div class="by a" style="justify-content:center"><span class="av">JE</span><div style="text-align:left"><b>Jesus Enrique Flores Riera</b><a href="https://github.com/jf-floresriera/Revision_sensores" target="_blank" rel="noopener"><svg><use href="#i-git"/></svg>github.com/jf-floresriera/Revision_sensores</a></div></div>
+  <div class="chips a" style="justify-content:center">
+   <span class="chip"><svg class="ic"><use href="#i-target"/></svg>Verifica el estado actual de cada misión</span>
+   <span class="chip"><svg class="ic"><use href="#i-layers"/></svg>Los límites del SWIR varían entre autores</span>
+  </div>
+ </div>
+</section>
+
+</main>
+
+<nav id="ui">
+ <button id="prev" aria-label="Diapositiva anterior"><svg viewBox="0 0 24 24" class="ic"><path d="M15 5l-7 7 7 7"/></svg></button>
+ <span id="num"></span>
+ <button id="next" aria-label="Diapositiva siguiente"><svg viewBox="0 0 24 24" class="ic"><path d="M9 5l7 7-7 7"/></svg></button>
+ <button id="fs" aria-label="Pantalla completa"><svg viewBox="0 0 24 24" class="ic"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+</nav>
+<div id="hint">← → · rueda · F pantalla completa</div>
+
+<script>
+(() => {
+const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const NS = 'http://www.w3.org/2000/svg';
+const el = (t, a = {}, p) => { const e = document.createElementNS(NS, t); for (const k in a) e.setAttribute(k, a[k]); if (p) p.appendChild(e); return e; };
+
+/* ---------- Referencias: [corto, título, detalle, url, tipo] ---------- */
+const R = {
+ 1:['NASA ARSET','NASA ARSET · Introducción a la percepción remota','Institucional (NASA)','https://www.earthdata.nasa.gov/s3fs-public/2026-02/IntroToRS_SXSW_1.pdf','i'],
+ 2:['NASA Earthdata','NASA Earthdata · The Electromagnetic Spectrum','Institucional (NASA)','https://www.earthdata.nasa.gov/learn/earth-observation-data-basics/electromagnetic-spectrum','i'],
+ 3:['NASA Earth Observatory','NASA Earth Observatory · Remote Sensing','Institucional (NASA)','https://science.nasa.gov/earth/earth-observatory/remote-sensing/','i'],
+ 4:['NOAA JetStream','NOAA JetStream · The Atmospheric Window','Institucional (NOAA)','https://www.noaa.gov/jetstream/satellites/absorb','i'],
+ 5:['CCRS','Canada Centre for Remote Sensing · Fundamentals of Remote Sensing','Tutorial institucional','https://natural-resources.canada.ca/sites/nrcan/files/earthsciences/pdf/resource/tutor/fundam/pdf/fundamentals_e.pdf','i'],
+ 6:['NASA EO · Infrared','NASA Earth Observatory · Observing in Infrared','Institucional (NASA)','https://earthobservatory.nasa.gov/features/FalseColor/page5.php','i'],
+ 7:['Sensors Insights','Sensors Insights · An Introduction to SWIR','Industria','https://www.fierceelectronics.com/components/introduction-to-swir','g'],
+ 8:['ITRC','ITRC · Remote Sensing','Guía técnica','https://asct-1.itrcweb.org/6-remote-sensing/?print=pdf','g'],
+ 9:['Cawse-Nicholson 2021','Cawse-Nicholson et al. (2021). NASA Surface Biology and Geology: algoritmos de imágenes','Remote Sensing of Environment 257, 112349','https://doi.org/10.1016/j.rse.2021.112349','j'],
+ 10:['eoPortal ECOSTRESS','eoPortal · ECOSTRESS','Portal de misiones','https://eoportal.org/satellite-missions/iss-ecostress','i'],
+ 11:['NASA JPL ECOSTRESS','NASA JPL · ECOSTRESS','Institucional (NASA)','https://www.jpl.nasa.gov/missions/ecosystem-spaceborne-thermal-radiometer-experiment-on-space-station-ecostress/','i'],
+ 12:['NASA ESSP','NASA ESSP · ECOSTRESS','Institucional (NASA)','https://essp.nasa.gov/earth-pathfinder-quests/projects/ecostress','i'],
+ 13:['Earthdata ECOSTRESS','NASA Earthdata · ECOSTRESS','Institucional (NASA)','https://www.earthdata.nasa.gov/sensors/ecostress','i'],
+ 14:['NASA Landsat TIRS','NASA · Landsat TIRS','Institucional (NASA)','https://science.nasa.gov/mission/landsat/tirs','i'],
+ 15:['Earthdata TIRS','NASA Earthdata · TIRS','Institucional (NASA)','https://www.earthdata.nasa.gov/sensors/tirs','i'],
+ 16:['NASA TIRS-2','NASA · TIRS-2 Instrument Development','Institucional (NASA)','https://nescacademy.nasa.gov/downloadFile/1137','i'],
+ 17:['Remote Sensing 7(1)','The Thermal Infrared Sensor (TIRS) on Landsat 8: design overview and pre-launch characterization','Remote Sensing 7(1)','https://doi.org/10.3390/rs70101135','j'],
+ 18:['RSE 248','Landsat 9: Empowering open science and applications through continuity','Remote Sensing of Environment 248, 111968','https://doi.org/10.1016/j.rse.2020.111968','j'],
+ 19:['Gerace 2020','Gerace et al. (2020). Temperatura superficial por ventana dividida','Remote Sensing 12(2), 224','https://www.mdpi.com/2072-4292/12/2/224','j'],
+ 20:['Dubayah 2020','Dubayah et al. (2020). The Global Ecosystem Dynamics Investigation (GEDI)','Science of Remote Sensing','https://doi.org/10.1016/j.srs.2020.100002','j'],
+ 21:['NASA biomasa','NASA · Breakthrough Forest Biomass-Carbon Product','Institucional (NASA)','https://www.nasa.gov/earth-and-climate/nasa-releases-breakthrough-forest-biomass-carbon-product','i'],
+ 22:['From Space to Soil','NASA SVS · From Space to Soil','Institucional (NASA)','https://svs.gsfc.nasa.gov/14854','i'],
+ 23:['NASA EO · GEDI','NASA Earth Observatory · A New Measuring Stick for Forests','Institucional (NASA)','https://science.nasa.gov/earth/earth-observatory/a-new-measuring-stick-for-forests-146203/','i'],
+ 24:['Eos · NISAR','Eos · Transformational satellite will monitor Earth’s surface changes','Revista divulgativa (AGU)','https://eos.org/articles/transformational-satellite-will-monitor-earths-surface-changes','p'],
+ 25:['eoPortal NISAR','eoPortal · NISAR','Portal de misiones','https://www.eoportal.org/satellite-missions/nisar','i'],
+ 26:['JPL NISAR','JPL · Ciencia de NISAR','Institucional (NASA)','https://www.jpl.nasa.gov/press-kits/nisar/mission-overview/science/','i'],
+ 27:['Scipal 2026','Scipal et al. (2026). Misión BIOMASS de la ESA','Proceedings of the IEEE 114(2), 220–235','https://doi.org/10.1109/JPROC.2026.3687416','j'],
+ 28:['Geoconnexion','Geoconnexion · BIOMASS satellite launched to count forest carbon','Prensa','https://www.geoconnexion.com/in-depth/biomass-satellite-launched-to-count-forest-carbon','p'],
+ 29:['Env+Energy Leader','Environment+Energy Leader · ESA launches BIOMASS','Prensa','https://environmentenergyleader.com/stories/esa-launches-biomass-satellite-to-track-global-forest-carbon,75359','p'],
+ 30:['Xataka On','Xataka On · Primer radar en banda P en el espacio','Prensa','https://www.xatakaon.com/space/european-scientists-have-launched-the-worlds-first-space-borne-p-band-radar-the-goal-seeing-through-the-forests','p'],
+ 31:['Science Chronicle','Science Chronicle · Why NISAR is a unique satellite','Prensa','https://sciencechronicle.in/2025/07/26/explainer-why-nisar-is-a-unique-satellite-with-remarkable-mission-objectives/','p'],
+ 32:['Drones 2023','A Review on Unmanned Aerial Vehicle Remote Sensing','Drones (MDPI), 2023','https://doi.org/10.3390/drones7060398','j'],
+ 33:['Remote Sensing 2019','Unmanned Aerial Vehicle for Remote Sensing Applications — A Review','Remote Sensing (MDPI), 2019','https://doi.org/10.3390/RS11121443','j'],
+ 34:['J. Plant Ecology','UAVs as remote sensing platforms in plant ecology','Journal of Plant Ecology 14(6)','https://academic.oup.com/jpe/article/14/6/1003/6355612','j'],
+ 35:['J. Robotics 2025','Besenyő (2025). Sensing From the Skies','Journal of Robotics (Wiley)','https://onlinelibrary.wiley.com/doi/10.1155/joro/3896195','j'],
+ 36:['Geocarto 2025','Drone in hyperspectral remote sensing','Geocarto International (Taylor & Francis), 2025','https://www.tandfonline.com/doi/full/10.1080/10106049.2025.2572670','j'],
+ 37:['SPH Engineering','SPH Engineering · UAV Remote Sensing','Guía de la industria','https://www.sphengineering.com/news/uav-remote-sensing','g'],
+ 38:['Giroscience','Giroscience · Fixed Wing Drones & UAV Sensors','Guía de la industria','https://www.giroscience.com/fixed-wing-drone-uav-sensors-guide','g'],
+ 39:['NASA EMS Tour','NASA · Tour of the Electromagnetic Spectrum','Institucional (NASA)','https://science.nasa.gov/ems/','i'],
+ 40:['Eos · specs NISAR','Eos · Especificaciones de NISAR','Revista divulgativa (AGU)','https://eos.org/?p=234891','p'],
+ 41:['ESA BIOMASS','ESA · Hoja informativa BIOMASS (vía TT)','Institucional (ESA)','https://via.tt.se/files/3235804/3884233/168623/sv','i'],
+ 42:['Earthdata OMI/OMPS','NASA Earthdata · Centros de datos (OMI, OMPS)','Institucional (NASA)','https://www.earthdata.nasa.gov/centers','i']
+};
+
+/* ---------- Utilidades ---------- */
+function smooth(p) {
+  let d = `M${p[0][0]},${p[0][1]}`;
+  for (let i = 0; i < p.length - 1; i++) {
+    const p0 = p[i - 1] || p[i], p1 = p[i], p2 = p[i + 1], p3 = p[i + 2] || p2, t = 6;
+    const c1 = [p1[0] + (p2[0] - p0[0]) / t, p1[1] + (p2[1] - p0[1]) / t];
+    const c2 = [p2[0] - (p3[0] - p1[0]) / t, p2[1] - (p3[1] - p1[1]) / t];
+    d += ` C${c1[0].toFixed(1)},${c1[1].toFixed(1)} ${c2[0].toFixed(1)},${c2[1].toFixed(1)} ${p2[0]},${p2[1]}`;
+  }
+  return d;
+}
+const fmt = (v, dec, sep) => {
+  const s = v.toFixed(dec);
+  if (sep === '0') return s;
+  const [a, b] = s.split('.');
+  return a.replace(/\B(?=(\d{3})+(?!\d))/g, ',') + (b ? '.' + b : '');
+};
+
+/* ---------- Figuras generadas ---------- */
+$$('path[data-pts]').forEach(p => p.setAttribute('d', smooth(JSON.parse(p.dataset.pts))));
+
+// Estrellas de la portada
+const st = $('#stars');
+for (let i = 0; i < 80; i++) {
+  const c = el('circle', { cx: (Math.random() * 900).toFixed(0), cy: (Math.random() * 800).toFixed(0), r: (Math.random() * 1.8 + .4).toFixed(1), fill: '#fff', opacity: (Math.random() * .6 + .2).toFixed(2) }, st);
+  if (i % 4 === 0) { c.setAttribute('class', 'pulse'); c.style.animationDelay = (-Math.random() * 3).toFixed(1) + 's'; }
+}
+
+// Onda con frecuencia creciente (espectro)
+(() => {
+  const W = 1680, y0 = 150, A = 66, l0 = 330, l1 = 7;
+  let d = '', ph = 0, x = 0;
+  while (x <= W) {
+    const lam = l0 * Math.pow(l1 / l0, x / W);
+    d += (x ? 'L' : 'M') + x.toFixed(1) + ',' + (y0 - A * Math.sin(ph)).toFixed(1);
+    const dx = Math.max(.4, lam / 14); x += dx; ph += 2 * Math.PI * dx / lam;
+  }
+  $('#chirp').setAttribute('d', d);
+  [['Radio', '#ff7a45'], ['Microondas', '#ff9a3d'], ['Infrarrojo', '#ff4d6d'], ['Visible', 'url(#rainbowR)'], ['Ultravioleta', '#a06bff'], ['Rayos X', '#6d7bff'], ['Gamma', '#3dd6ff']]
+    .forEach(([n, c], i) => {
+      const g = el('g', { class: 'a', style: `--i:${i + 2}` }, $('#segs'));
+      el('rect', { x: i * 241, y: 255, width: 232, height: 90, rx: 22, fill: c, opacity: i === 3 ? 1 : .88 }, g);
+      el('text', { x: i * 241 + 116, y: 309, 'text-anchor': 'middle', fill: '#fff', 'font-size': 27, 'font-weight': 800 }, g).textContent = n;
+    });
+})();
+
+// Ventanas atmosféricas (esquema)
+(() => {
+  const T = [[0,0],[70,.02],[100,.05],[130,.55],[160,.9],[250,.95],[340,.95],[370,.7],[385,.6],[405,.85],[450,.9],[480,.78],[500,.86],[535,.9],[560,.12],[580,.05],[605,.8],[650,.9],[680,.75],[700,.1],[725,.06],[750,.6],[790,.7],[820,.35],[840,.08],[870,.12],[900,.5],[940,.65],[980,.5],[1000,.12],[1030,.05],[1060,.1],[1085,.7],[1115,.85],[1135,.5],[1155,.82],[1195,.7],[1225,.12],[1260,.03],[1320,.02],[1360,.08],[1400,.55],[1440,.92],[1500,.97]];
+  const d = smooth(T.map(([x, t]) => [90 + x, +(470 - 400 * t).toFixed(1)]));
+  $('#winLine').setAttribute('d', d);
+  $('#winFill').setAttribute('d', d + ' L1590,470 L90,470 Z');
+})();
+
+// SWIR: absorción del agua en 1,400 / 1,900 / 2,400 nm (esquema)
+(() => {
+  const sx = nm => 80 + (nm - 1000) / 2000 * 1520, sy = r => 360 - r * 500;
+  const g = (nm, c, s) => Math.exp(-(((nm - c) / s) ** 2));
+  const r = nm => .5 - .13 * (nm - 1000) / 2000 - .3 * g(nm, 1400, 55) - .36 * g(nm, 1900, 65) - .22 * g(nm, 2400, 90);
+  let d = '';
+  for (let nm = 1000; nm <= 3000; nm += 10) d += (nm === 1000 ? 'M' : 'L') + sx(nm).toFixed(1) + ',' + sy(r(nm)).toFixed(1);
+  $('#swLine').setAttribute('d', d);
+  $('#swFill').setAttribute('d', d + ' L1600,360 L80,360 Z');
+  const P = $('#swPins');
+  [1400, 1900, 2400].forEach((c, i) => {
+    const x = sx(c), y = sy(r(c));
+    const g1 = el('g', { class: 'a', style: `--i:${i + 4}` }, P);
+    el('line', { x1: x, y1: 84, x2: x, y2: y, stroke: '#ff7a45', 'stroke-width': 3, 'stroke-dasharray': '6 6' }, g1);
+    el('circle', { cx: x, cy: y, r: 11, fill: '#ff7a45', class: 'pulse' }, g1);
+    const pl = el('g', { class: 'pl', style: '--pc:#ff7a45' }, g1);
+    const t = el('text', { x, y: 58 }, pl);
+    el('tspan', { class: 'cnt', 'data-to': c }, t); t.appendChild(document.createTextNode(' nm'));
+  });
+  // Mover la etiqueta SWIR a la zona baja
+  const lab = $('#swir .pl text'); lab.setAttribute('x', 1380); lab.setAttribute('y', 300);
+})();
+
+// Diagrama de regiones (escala logarítmica)
+(() => {
+  const G = $('#gantt'), X = um => 420 + (Math.log10(um) + 3) / 9 * 1180;
+  [[1e-3, '1 nm'], [1, '1 µm'], [1e3, '1 mm'], [1e6, '1 m']].forEach(([v, l]) => {
+    el('line', { x1: X(v), y1: 30, x2: X(v), y2: 560, class: 'gridl' }, G);
+    el('text', { x: X(v), y: 594, class: 't-lab', 'text-anchor': 'middle' }, G).textContent = l;
+  });
+  const rows = [
+    ['Ultravioleta', '1 nm – 0.36 µm · ozono', 1e-3, .36, '#a06bff'],
+    ['Visible', '0.4 – 0.7 µm · color y agua', .4, .7, 'url(#rainbowR)'],
+    ['Infrarrojo cercano', '0.7 – 1.3 µm · vegetación', .7, 1.3, '#ff4fa3'],
+    ['SWIR', '~1.1 – 3 µm · humedad, fuego', 1.1, 3, '#ffc857'],
+    ['Infrarrojo térmico', '3 – 15 µm · temperatura', 3, 15, '#ff7a45'],
+    ['Microondas', '1 mm – 1 m · radar', 1e3, 1e6, '#00c6ff']
+  ];
+  rows.forEach(([n, rg, a, b, c], i) => {
+    const y = 34 + i * 88, g = el('g', { class: 'grow' }, G);
+    el('rect', { x: 0, y: y - 4, width: 1680, height: 80, rx: 18, class: 'bg' }, g);
+    el('text', { x: 20, y: y + 46, fill: '#fff', 'font-size': 30, 'font-weight': 800, class: 'a', style: `--i:${i + 2}` }, g).textContent = n;
+    const x1 = X(a), x2 = X(b);
+    el('rect', { x: x1, y: y + 14, width: Math.max(14, x2 - x1), height: 46, rx: 14, fill: c, class: 'bar', style: `--i:${i}`, filter: 'url(#glw)' }, g);
+    const right = x2 + 22 < 1400;
+    el('text', { x: right ? x2 + 22 : x1 - 22, y: y + 46, class: 't-lab a', 'text-anchor': right ? 'start' : 'end', style: `--i:${i + 4}` }, g).textContent = rg;
+  });
+})();
+
+// Resolución espacial: gruesa vs fina
+(() => {
+  const S = $('#resSp');
+  const col = (x, y) => { const d = Math.hypot((x - 140) / 95, (y - 115) / 62); if (d < 1) return '#3d8bff'; if (x > 210 && y < 80) return '#ffc857'; return ((Math.floor(x / 75) + Math.floor(y / 70)) % 2) ? '#2de2a6' : '#169a63'; };
+  [[6, 4, 'sw1'], [24, 16, 'sw2']].forEach(([nx, ny, cl]) => {
+    const g = el('g', { class: cl }, S), w = 300 / nx, h = 220 / ny;
+    for (let i = 0; i < nx; i++) for (let j = 0; j < ny; j++)
+      el('rect', { x: i * w, y: j * h, width: w + .4, height: h + .4, fill: col(i * w + w / 2, j * h + h / 2) }, g);
+  });
+  el('rect', { x: 0, y: 0, width: 300, height: 220, rx: 14, fill: 'none', stroke: 'rgba(255,255,255,.25)', 'stroke-width': 2 }, S);
+})();
+// Resolución espectral: multi vs hiper
+(() => {
+  const S = $('#resSe');
+  el('text', { x: 0, y: 16, class: 't-lab', 'font-size': 18 }, S).textContent = 'Multiespectral';
+  ['#3d8bff', '#2de26a', '#ff4d6d', '#ff4fa3'].forEach((c, i) => el('rect', { x: i * 76, y: 26, width: 62, height: 62, rx: 8, fill: c, class: 'vbar', style: `--i:${i * .4}` }, S));
+  el('text', { x: 0, y: 124, class: 't-lab', 'font-size': 18 }, S).textContent = 'Hiperespectral';
+  for (let i = 0; i < 60; i++) el('rect', { x: i * 5, y: 134, width: 3.4, height: 80, rx: 1.5, fill: `hsl(${(260 - i * 5.2 + 360) % 360} 90% 62%)`, class: 'vbar', style: `--i:${(i * .05).toFixed(2)}` }, S);
+})();
+// Resolución temporal: revisitas
+(() => {
+  const S = $('#resTe');
+  el('line', { x1: 10, y1: 120, x2: 290, y2: 120, class: 'ax' }, S);
+  for (let i = 0; i < 16; i++) {
+    const x = 14 + i * 18, hit = i % 5 === 0;
+    el('circle', { cx: x, cy: 120, r: hit ? 9 : 4, fill: hit ? '#ffc857' : 'rgba(255,255,255,.35)' }, S);
+    if (hit) {
+      el('circle', { cx: x, cy: 120, r: 14, fill: 'none', stroke: '#ffc857', 'stroke-width': 3, class: 'rip', style: `animation-delay:${-i * .2}s` }, S);
+      const u = el('use', { href: '#i-sat', x: x - 17, y: 40, width: 34, height: 34, class: 'ic', color: '#ffc857' }, S);
+    }
+  }
+  el('text', { x: 150, y: 190, class: 't-lab', 'text-anchor': 'middle', 'font-size': 18 }, S).textContent = 'Días →';
+})();
+
+// Ondas de radar y cierre
+$$('path.sine').forEach(p => {
+  const per = +p.dataset.per, y = +p.dataset.y, W = 900 + per * 2, A = Math.min(28, per / 3 + 8);
+  let d = '';
+  for (let x = 0; x <= W; x += 2) d += (x ? 'L' : 'M') + x + ',' + (y - A * Math.sin(2 * Math.PI * x / per)).toFixed(1);
+  p.setAttribute('d', d); p.style.setProperty('--per', per);
+});
+
+// Tiras del espectro (sensores y misiones)
+const SEG = ['UV', 'VIS', 'NIR', 'SWIR', 'TIR', 'MW'];
+const strip = on => { const s = document.createElement('div'); s.className = 'strip'; SEG.forEach((_, i) => { const e = document.createElement('i'); if (on.includes(i)) e.className = 'lit'; s.appendChild(e); }); return s; };
+$$('.sens').forEach(c => {
+  const on = (c.dataset.on || '').split(',').filter(Boolean).map(Number);
+  const l = document.createElement('div'); l.className = 'strip-l'; l.innerHTML = SEG.map(x => `<span>${x}</span>`).join('');
+  c.append(strip(on), l);
+  if (c.dataset.act) c.insertAdjacentHTML('beforeend', `<span class="chip" style="position:absolute;top:28px;right:28px;font-size:18px;padding:8px 16px">Activo · ${c.dataset.act}</span>`);
+});
+$$('.mrow[data-on],.mrow[data-act]').forEach(r => {
+  const h = r.querySelector('.strip');
+  if (r.dataset.act) { h.outerHTML = `<div><span class="chip" style="font-size:20px;padding:8px 18px">${r.dataset.act}</span></div>`; return; }
+  h.replaceWith(strip(r.dataset.on.split(',').map(Number)));
+});
+
+// Referencias
+const refItem = (id, k) => { const [, t, sub, u] = R[id]; return `<a class="ref card a" style="--i:${(k * .35).toFixed(2)}" href="${u}" target="_blank" rel="noopener"><span class="n">R${id}</span><span>${t}<small>${sub}</small></span></a>`; };
+const ids = Object.keys(R).map(Number);
+$('#refJ').innerHTML = ids.filter(i => R[i][4] === 'j').map(refItem).join('');
+$('#refI').innerHTML = ['i', 'g', 'p'].flatMap(t => ids.filter(i => R[i][4] === t)).map(refItem).join('');
+
+/* ---------- Diapositivas ---------- */
+const S = $$('.slide'), N = S.length;
+document.head.insertAdjacentHTML('beforeend', '<style>.grow .bg{fill:transparent;transition:fill .3s}.grow:hover .bg{fill:rgba(255,255,255,.06)}.on .sw1{animation:swap 5s infinite}.on .sw2{animation:swap 5s infinite reverse}</style>');
+S.forEach((s, i) => {
+  if (s.dataset.refs) {
+    const d = document.createElement('div'); d.className = 'srcs';
+    d.innerHTML = '<span>Fuentes</span>' + s.dataset.refs.split(',').map(id => `<a href="${R[id][3]}" target="_blank" rel="noopener" title="${R[id][1]}">R${id} · ${R[id][0]}</a>`).join('');
+    s.appendChild(d);
+  }
+  if (i) s.insertAdjacentHTML('beforeend', `<div class="pgn"><b>${String(i + 1).padStart(2, '0')}</b> / ${N}</div>`);
+  let k = 0; $$('.a', s).forEach(e => { if (!e.style.getPropertyValue('--i')) e.style.setProperty('--i', k); k++; });
+});
+$$('svg .dr').forEach(p => p.setAttribute('pathLength', '1'));
+
+const setFinal = () => $$('.cnt').forEach(c => c.textContent = fmt(+c.dataset.to, +(c.dataset.dec || 0), c.dataset.sep));
+setFinal();
+
+let raf = 0;
+function counters(s) {
+  cancelAnimationFrame(raf);
+  const cs = $$('.cnt', s); if (!cs.length) return;
+  cs.forEach(c => c.textContent = fmt(0, +(c.dataset.dec || 0), c.dataset.sep));
+  const t0 = performance.now() + 350, D = 1800;
+  const step = now => {
+    const k = Math.min(1, Math.max(0, (now - t0) / D)), e = 1 - Math.pow(1 - k, 4);
+    cs.forEach(c => c.textContent = fmt(+c.dataset.to * e, +(c.dataset.dec || 0), c.dataset.sep));
+    if (k < 1 && s.classList.contains('on')) raf = requestAnimationFrame(step);
+  };
+  raf = requestAnimationFrame(step);
+}
+
+let cur = -1;
+function go(n) {
+  n = Math.max(0, Math.min(N - 1, n));
+  if (n === cur) return;
+  if (cur >= 0) S[cur].classList.remove('on');
+  cur = n;
+  const s = S[n]; void s.offsetWidth; s.classList.add('on');
+  (s.dataset.c || '').split(',').forEach((c, i) => c && document.documentElement.style.setProperty('--c' + (i + 1), c));
+  $('#bar').style.width = ((n + 1) / N * 100) + '%';
+  $('#num').textContent = `${n + 1} / ${N}`;
+  try { history.replaceState(null, '', '#' + (n + 1)); } catch (e) {}
+  counters(s);
+}
+
+const fit = () => document.documentElement.style.setProperty('--s', Math.min(innerWidth / 1920, innerHeight / 1080));
+addEventListener('resize', fit); fit();
+
+addEventListener('keydown', e => {
+  if (['ArrowRight', 'ArrowDown', 'PageDown', ' ', 'Enter'].includes(e.key)) { e.preventDefault(); go(cur + 1); }
+  else if (['ArrowLeft', 'ArrowUp', 'PageUp', 'Backspace'].includes(e.key)) { e.preventDefault(); go(cur - 1); }
+  else if (e.key === 'Home') go(0);
+  else if (e.key === 'End') go(N - 1);
+  else if (e.key === 'f' || e.key === 'F') fs();
+});
+let lock = 0;
+addEventListener('wheel', e => {
+  e.preventDefault();
+  const now = Date.now(), dv = Math.abs(e.deltaY) > Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
+  if (now < lock || Math.abs(dv) < 10) return;
+  lock = now + 850; go(cur + (dv > 0 ? 1 : -1));
+}, { passive: false });
+let tx = 0, ty = 0;
+addEventListener('touchstart', e => { tx = e.touches[0].clientX; ty = e.touches[0].clientY; }, { passive: true });
+addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].clientX - tx, dy = e.changedTouches[0].clientY - ty;
+  if (Math.max(Math.abs(dx), Math.abs(dy)) > 50) go(cur + ((Math.abs(dx) > Math.abs(dy) ? dx : dy) < 0 ? 1 : -1));
+});
+function fs() { if (!document.fullscreenElement) document.documentElement.requestFullscreen?.(); else document.exitFullscreen?.(); }
+$('#prev').onclick = () => go(cur - 1);
+$('#next').onclick = () => go(cur + 1);
+$('#fs').onclick = fs;
+
+// Brillo que sigue al cursor en tarjetas
+addEventListener('pointermove', e => {
+  const c = e.target.closest && e.target.closest('.card'); if (!c) return;
+  const r = c.getBoundingClientRect();
+  c.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100) + '%');
+  c.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100) + '%');
+});
+// Leyenda interactiva de firmas espectrales
+const sig = $('#sig');
+$$('#lg6 .chip').forEach(ch => {
+  ch.addEventListener('mouseenter', () => { sig.classList.add('dim'); $$('.curve', sig).forEach(p => p.classList.toggle('hi', p.dataset.k === ch.dataset.k)); });
+  ch.addEventListener('mouseleave', () => sig.classList.remove('dim'));
+});
+
+// Etiquetas tipo píldora (se miden con el texto final)
+function pills() {
+  $$('.pl').forEach(g => {
+    if (g.querySelector('rect')) return;
+    const t = g.querySelector('text'), b = t.getBBox();
+    g.insertBefore(el('rect', { x: b.x - 22, y: b.y - 9, width: b.width + 44, height: b.height + 18, rx: (b.height + 18) / 2 }), t);
+  });
+}
+const start = () => { pills(); go((parseInt(location.hash.slice(1), 10) || 1) - 1); };
+if (document.readyState === 'complete') start(); else addEventListener('load', start);
+})();
+</script>
+</body>
+</html>
