@@ -1,6 +1,6 @@
 # Sensores remotos: espectro electromagnético, plataformas y drones
 
-Presentación interactiva de 44 diapositivas (HTML5, CSS y JavaScript puros, sin librerías externas) que resume una revisión sobre percepción remota: el espectro electromagnético, las ventanas atmosféricas, las firmas espectrales, los sensores pasivos y activos, las plataformas (suelo, aire, espacio), los drones y misiones de NASA y ESA (Landsat, ECOSTRESS, GEDI, NISAR y BIOMASS).
+Presentación interactiva de 47 diapositivas (HTML5, CSS y JavaScript puros, sin librerías externas) que resume una revisión sobre percepción remota: el espectro electromagnético, las ventanas atmosféricas, las firmas espectrales, los sensores pasivos y activos, las plataformas (suelo, aire, espacio), los drones y misiones de NASA y ESA (Landsat, ECOSTRESS, GEDI, NISAR y BIOMASS).
 
 **Autor:** Jesus Enrique Flores Riera ([@jf-floresriera](https://github.com/jf-floresriera))
 
@@ -26,12 +26,12 @@ Para publicarla como página web, activa **GitHub Pages** en *Settings → Pages
 - **Galería SAR multisensor (24–29):** cinco casos con el panel completo y una explicación breve: acuicultura (Meta), caña de azúcar (Valle del Cauca), la confluencia Orinoco–Caroní en dos fechas y arroz (Venezuela). Haz clic en un panel para ampliarlo. Los casos vienen de [SAR-and-Optical-Multisensor-Interpretation-Guide](https://github.com/jf-floresriera/SAR-and-Optical-Multisensor-Interpretation-Guide).
 - **LiDAR y drones (30–34):** GEDI, sensores a bordo, costos y limitaciones.
 - **Aplicación propia: fenotipado con dron (35–37):** timelapse interactivo de cinco vuelos, calibración con Sentinel-2, grilla de parcelas, dinámica del dosel y heredabilidad. Viene de [pea_drone](https://github.com/jf-floresriera/pea_drone).
-- **Misiones (38–41):** Landsat 8 y 9, ECOSTRESS, NISAR y BIOMASS, con un resumen.
-- **Referencias y cierre (42–44).**
+- **Misiones e historia (38–44):** Landsat 8 y 9, ECOSTRESS, NISAR y BIOMASS. Incluye una línea de tiempo interactiva de 1960 a 2025 (de TIROS-1 a NISAR), la longitud de onda que usa cada misión, la altura de su órbita y un resumen.
+- **Referencias y cierre (45–47).**
 
 Las figuras de los repositorios propios están incrustadas en `index.html`. Las de NASA y NOAA se cargan desde sus sitios, así que necesitan conexión a internet. Si no cargan, se muestra una tarjeta con el enlace a la fuente.
 
-Cada diapositiva enlaza sus fuentes en la parte inferior, y las dos diapositivas de referencias enlazan las 44 fuentes.
+Cada diapositiva enlaza sus fuentes en la parte inferior, y las dos diapositivas de referencias enlazan las 55 fuentes.
 
 ## Notas
 

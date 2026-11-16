@@ -1225,6 +1225,70 @@ figcaption a{color:#fff}
  </div>
 </section>
 
+
+<style>
+#tline .node{cursor:pointer}
+#tline .node circle.dot{transition:r .3s}
+#tline .node:hover circle.dot,#tline .node.cur circle.dot{r:17}
+#tline .node text{transition:fill .3s}
+#tline .node.cur text.nm{fill:#fff}
+.tdet{display:grid;grid-template-columns:auto 1fr auto;gap:30px;align-items:center;padding:26px 34px}
+.tdet .big{font-size:70px}
+.tdet .ttl{margin:0;font-size:40px}
+.tdet .lab{font-size:24px;margin-top:6px}
+.tdet .kind{padding:10px 22px;border-radius:99px;font-size:20px;font-weight:800;background:var(--kc);color:#0a0f2a}
+.tdet>*{transition:opacity .35s}
+.tdet.sw>*{opacity:0}
+.tleg{display:flex;gap:14px}
+.tleg .chip{font-size:20px;padding:8px 18px}
+.tleg i{width:16px;height:16px;border-radius:50%;background:var(--k)}
+</style>
+
+<!-- M1 · Historia -->
+<section class="slide" data-c="#6d4bff,#ffc857,#00c6ff" data-refs="5,45,14,50,53,52,11,49,47,46,28">
+ <div class="sl stack" style="gap:24px">
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:40px">
+   <div><div class="eb a">Historia de las misiones</div>
+   <h2 class="h m a">De TIROS-1 a NISAR: <em><span class="cnt" data-to="65"></span> años</em> mirando la Tierra.</h2></div>
+   <div class="tleg a">
+    <span class="chip" style="--k:#a06bff"><i></i>Meteorológico</span>
+    <span class="chip" style="--k:#ff7a45"><i></i>Óptico / térmico</span>
+    <span class="chip" style="--k:#2de2a6"><i></i>Láser</span>
+    <span class="chip" style="--k:#00c6ff"><i></i>Radar</span>
+   </div>
+  </div>
+  <svg class="gfx" viewBox="0 0 1680 430" id="tline" style="flex:1"></svg>
+  <div class="card tdet a" id="tdet"><div class="big gt" id="tdY"></div><div><div class="ttl" id="tdN"></div><div class="lab" id="tdT"></div></div><span class="kind" id="tdK"></span></div>
+ </div>
+</section>
+
+<!-- M2 · Espectro por misión -->
+<section class="slide" data-c="#ff4fa3,#00c6ff,#2de2a6" data-refs="49,47,14,50,53,46,28">
+ <div class="sl stack" style="gap:30px">
+  <div><div class="eb a">Comparación · longitud de onda</div>
+  <h2 class="h m a">Del láser verde al radar de 70 cm: <em>cada misión elige su onda</em>.</h2></div>
+  <svg class="gfx" viewBox="0 0 1680 660" id="mspec"></svg>
+ </div>
+</section>
+
+<!-- M3 · Altura de órbita -->
+<section class="slide" data-c="#3d8bff,#2de2a6,#ffc857" data-refs="48,55,54,50,46,52,5">
+ <div class="sl cols" style="grid-template-columns:5fr 8fr">
+  <div>
+   <div class="eb a">Comparación · altura de órbita</div>
+   <h2 class="h m a">Todas vuelan bajo: entre <em>419 y 786 km</em> de altura.</h2>
+   <div class="chips">
+    <span class="chip a"><svg class="ic"><use href="#i-sat"/></svg>GEDI y ECOSTRESS viajan en la Estación Espacial</span>
+    <span class="chip a"><svg class="ic"><use href="#i-clock"/></svg>Órbitas polares heliosíncronas en las demás</span>
+    <span class="chip a"><svg class="ic"><use href="#i-target"/></svg>GOES: <b><span class="cnt" data-to="36000"></span> km</b>, fuera de escala</span>
+   </div>
+  </div>
+  <div style="height:780px;display:flex;flex-direction:column">
+   <div class="lab a" style="text-align:center;margin-bottom:6px">Altura aproximada sobre la Tierra (km)</div>
+   <div class="vbars" id="alt" style="gap:22px"></div>
+  </div>
+ </div>
+</section>
 <!-- 27 · Resumen de misiones -->
 <section class="slide" data-c="#6d4bff,#ff4fa3,#2de2a6">
  <style>.mrow{display:grid;grid-template-columns:280px 560px 1fr;align-items:center;gap:40px;padding:20px 34px;border-radius:26px}.mrow .ttl{margin:0;font-size:32px}.mrow .strip{margin:0}.mrow .lab{font-size:24px;color:#fff}.mrow .lab b{color:var(--k)}</style>
@@ -1244,7 +1308,7 @@ figcaption a{color:#fff}
 
 <!-- 28 · Referencias: revistas -->
 <section class="slide" data-c="#6d4bff,#00c6ff,#ffc857">
- <style>.refs{display:grid;gap:14px;align-content:start}.ref{display:flex;align-items:center;gap:18px;padding:16px 22px;border-radius:20px;text-decoration:none;font-size:22px;font-weight:600;line-height:1.25}.ref .n{flex:none;width:52px;height:52px;border-radius:14px;display:grid;place-items:center;font-weight:800;font-size:20px;background:linear-gradient(135deg,var(--c1),var(--c2))}.ref small{display:block;color:var(--mut);font-size:17px;font-weight:600;margin-top:3px}.refs.sm .ref{font-size:15px;padding:8px 12px;gap:10px;border-radius:14px;line-height:1.2}.refs.sm .ref .n{width:38px;height:38px;font-size:15px;border-radius:10px}.refs.sm .ref small{font-size:14px}</style>
+ <style>.refs{display:grid;gap:14px;align-content:start}.ref{display:flex;align-items:center;gap:18px;padding:16px 22px;border-radius:20px;text-decoration:none;font-size:22px;font-weight:600;line-height:1.25}.ref .n{flex:none;width:52px;height:52px;border-radius:14px;display:grid;place-items:center;font-weight:800;font-size:20px;background:linear-gradient(135deg,var(--c1),var(--c2))}.ref small{display:block;color:var(--mut);font-size:17px;font-weight:600;margin-top:3px}.refs.sm .ref{font-size:14px;padding:7px 10px;gap:8px;border-radius:12px;line-height:1.18}.refs.sm .ref .n{width:38px;height:38px;font-size:15px;border-radius:10px}.refs.sm .ref small{font-size:14px}</style>
  <div class="sl stack" style="gap:30px">
   <div><div class="eb a">Referencias · 1/2</div>
   <h2 class="h m a"><svg class="ic" style="width:64px;height:64px;vertical-align:-8px;color:var(--c2)"><use href="#i-book"/></svg> Artículos en <em>revistas científicas</em></h2></div>
@@ -1257,7 +1321,7 @@ figcaption a{color:#fff}
  <div class="sl stack" style="gap:26px">
   <div><div class="eb a">Referencias · 2/2</div>
   <h2 class="h m a"><svg class="ic" style="width:64px;height:64px;vertical-align:-8px;color:var(--c2)"><use href="#i-bank"/></svg> Instituciones, guías y <em>prensa</em></h2></div>
-  <div class="refs sm" id="refI" style="grid-template-columns:repeat(5,1fr)"></div>
+  <div class="refs sm" id="refI" style="grid-template-columns:repeat(6,1fr)"></div>
  </div>
 </section>
 
@@ -1336,6 +1400,17 @@ const R = {
  41:['ESA BIOMASS','ESA · Hoja informativa BIOMASS (vía TT)','Institucional (ESA)','https://via.tt.se/files/3235804/3884233/168623/sv','i'],
  43:['Repo pea_drone','Flores Riera, J. E. · pea_drone: fenotipado UAV multiespectral de arveja y garbanzo','Repositorio GitHub (trabajo propio)','https://github.com/jf-floresriera/pea_drone','r'],
  44:['Repo guía SAR','Flores Riera, J. E. · SAR and Optical Multisensor Interpretation Guide (CEOS v3.0)','Repositorio GitHub (trabajo propio)','https://github.com/jf-floresriera/SAR-and-Optical-Multisensor-Interpretation-Guide','r'],
+ 45:['USGS Landsat 9','USGS · When was the Landsat 9 satellite launched?','Institucional (USGS)','https://www.usgs.gov/index.php/faqs/when-was-landsat-9-satellite-launched','i'],
+ 46:['ISRO NISAR','ISRO · GSLV-F16 lanzará NISAR (30 de julio de 2025)','Institucional (ISRO)','https://www.isro.gov.in/ISRO_EN/Mission_GSLVF16_NISAR.html','i'],
+ 47:['eoPortal GEDI','eoPortal · ISS: GEDI','Portal de misiones','https://eoportal.org/satellite-missions/iss-gedi','i'],
+ 48:['NASA GEDI óptica','NASA NTRS · Diseño óptico de GEDI (órbita de 419 km)','Institucional (NASA)','https://ntrs.nasa.gov/api/citations/20190030790/downloads/20190030790.pdf','i'],
+ 49:['Earthdata ICESat-2','NASA Earthdata · ICESat-2','Institucional (NASA)','https://www.earthdata.nasa.gov/data/platforms/space-based-platforms/icesat-2','i'],
+ 50:['ESA Sentinel-1','ESA · Sentinel-1: Facts and figures','Institucional (ESA)','https://esa.int/Applications/Observing_the_Earth/Copernicus/Sentinel-1/Facts_and_figures','i'],
+ 51:['eoPortal Sentinel-1','eoPortal · Copernicus: Sentinel-1','Portal de misiones','https://www.eoportal.org/satellite-missions/copernicus-sentinel-1','i'],
+ 52:['BELSPO Sentinel-2A','BELSPO · Sentinel-2A: características del satélite','Institucional (Bélgica)','https://eo.belspo.be/node/777171','i'],
+ 53:['JAXA ALOS-2','JAXA · Proposals for DAICHI-2 (ALOS-2)','Institucional (JAXA)','https://global.jaxa.jp/projects/sat/alos2/pdf/daichi2_SolutionBook_3rd_En.pdf','i'],
+ 54:['ALOS-2 (Wikipedia)','Wikipedia · ALOS-2 (órbita y banda L)','Enciclopedia','https://en.wikipedia.org/wiki/ALOS-2','p'],
+ 55:['ICESat-2 (Wikipedia)','Wikipedia · ICESat-2 (órbita de ~496 km)','Enciclopedia','https://en.wikipedia.org/wiki/ICESat-2','p'],
  42:['Earthdata OMI/OMPS','NASA Earthdata · Centros de datos (OMI, OMPS)','Institucional (NASA)','https://www.earthdata.nasa.gov/centers','i']
 };
 
@@ -1511,12 +1586,14 @@ document.head.insertAdjacentHTML('beforeend', '<style>.grow .bg{fill:transparent
 S.forEach((s, i) => {
   if (s.dataset.refs) {
     const d = document.createElement('div'); d.className = 'srcs';
-    d.innerHTML = '<span>Fuentes</span>' + s.dataset.refs.split(',').map(id => `<a href="${R[id][3]}" target="_blank" rel="noopener" title="${R[id][1]}">R${id} · ${R[id][0]}</a>`).join('');
+    const ids = s.dataset.refs.split(','), more = ids.length > 5 ? ids.splice(4) : [];
+    d.innerHTML = '<span>Fuentes</span>' + ids.map(id => `<a href="${R[id][3]}" target="_blank" rel="noopener" title="${R[id][1]}">R${id} · ${R[id][0]}</a>`).join('') + (more.length ? `<a href="#" class="more" title="${more.map(id => 'R' + id + ' · ' + R[id][0]).join('\n')}">+${more.length} fuentes · ver referencias</a>` : '');
     s.appendChild(d);
   }
   if (i) s.insertAdjacentHTML('beforeend', `<div class="pgn"><b>${String(i + 1).padStart(2, '0')}</b> / ${N}</div>`);
   let k = 0; $$('.a', s).forEach(e => { if (!e.style.getPropertyValue('--i')) e.style.setProperty('--i', k); k++; });
 });
+$$('.srcs .more').forEach(a => a.addEventListener('click', e => { e.preventDefault(); go(S.findIndex(x => x.querySelector('#refI'))); }));
 $$('svg .dr').forEach(p => p.setAttribute('pathLength', '1'));
 
 const setFinal = () => $$('.cnt').forEach(c => c.textContent = fmt(+c.dataset.to, +(c.dataset.dec || 0), c.dataset.sep));
@@ -1626,6 +1703,106 @@ $$('[data-zoom]').forEach(p => p.addEventListener('click', () => { LB.querySelec
 LB.addEventListener('click', () => LB.classList.remove('on'));
 addEventListener('keydown', e => { if (!LB.classList.contains('on')) return; e.stopImmediatePropagation(); e.preventDefault(); LB.classList.remove('on'); }, true);
 $$('[data-goto]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); go(S.indexOf(document.getElementById(a.dataset.goto))); }));
+
+// Historia: línea de tiempo interactiva
+(() => {
+  const G = $('#tline'); if (!G) return;
+  const K = { met: ['#a06bff', 'Meteorológico'], opt: ['#ff7a45', 'Óptico / térmico'], las: ['#2de2a6', 'Láser'], rad: ['#00c6ff', 'Radar'] };
+  const M = [
+    [1960.3, '1960', 'TIROS-1', 'Estados Unidos · el primer satélite meteorológico', 'met'],
+    [1972.55, '23 jul 1972', 'Landsat 1 (ERTS-1)', 'NASA · el primero pensado para estudiar los continentes', 'opt'],
+    [1978.2, '1978', 'Landsat 3', 'Primera banda térmica de Landsat, con píxel de 240 m', 'opt'],
+    [2013.1, '11 feb 2013', 'Landsat 8', 'NASA y USGS · TIRS con dos bandas térmicas de 100 m', 'opt'],
+    [2014.25, '3 abr 2014', 'Sentinel-1A', 'ESA · radar banda C (5.405 GHz), el primer Sentinel de Copernicus', 'rad'],
+    [2014.4, '24 may 2014', 'ALOS-2', 'JAXA · radar PALSAR-2 en banda L (1.2 GHz)', 'rad'],
+    [2015.47, '23 jun 2015', 'Sentinel-2A', 'ESA · óptico multiespectral de Copernicus', 'opt'],
+    [2018.49, '29 jun 2018', 'ECOSTRESS', 'NASA · radiómetro térmico en la Estación Espacial', 'opt'],
+    [2018.7, '15 sep 2018', 'ICESat-2', 'NASA · láser verde de 532 nm para hielo y relieve', 'las'],
+    [2018.93, '5 dic 2018', 'GEDI', 'NASA · láser de 1064 nm en la Estación Espacial para medir bosques', 'las'],
+    [2021.74, '27 sep 2021', 'Landsat 9', 'NASA y USGS · continúa el registro iniciado en 1972', 'opt'],
+    [2025.32, '29 abr 2025', 'BIOMASS', 'ESA · el primer radar en banda P en el espacio', 'rad'],
+    [2025.58, '30 jul 2025', 'NISAR', 'NASA e ISRO · el primer radar con dos frecuencias (L y S)', 'rad']
+  ];
+  const X = y => y < 2010 ? 40 + (y - 1958) / 52 * 470 : 600 + (y - 2010) / 16.5 * 1050;
+  const AY = 300;
+  el('line', { x1: 20, y1: AY, x2: 530, y2: AY, stroke: 'rgba(255,255,255,.3)', 'stroke-width': 4 }, G);
+  el('line', { x1: 575, y1: AY, x2: 1670, y2: AY, stroke: 'rgba(255,255,255,.3)', 'stroke-width': 4 }, G);
+  el('path', { d: `M540 ${AY + 16}l14 -32M558 ${AY + 16}l14 -32`, stroke: 'rgba(255,255,255,.5)', 'stroke-width': 3 }, G);
+  [1960, 1970, 1980, 1990, 2000, 2010, 2014, 2018, 2022, 2026].forEach(y => {
+    el('line', { x1: X(y), y1: AY - 8, x2: X(y), y2: AY + 8, stroke: 'rgba(255,255,255,.4)', 'stroke-width': 2 }, G);
+    el('text', { x: X(y), y: AY + 44, class: 't-lab', 'text-anchor': 'middle' }, G).textContent = y;
+  });
+  el('text', { x: 275, y: AY + 88, class: 't-lab', 'text-anchor': 'middle', 'font-size': 18 }, G).textContent = '1958–2010 · escala comprimida';
+  el('text', { x: 1120, y: AY + 88, class: 't-lab', 'text-anchor': 'middle', 'font-size': 18 }, G).textContent = '2010–2026 · escala ampliada';
+  const LV = [0, 1, 2, 0, 1, 2, 0, 1, 2, 3, 0, 1, 2];
+  const nodes = M.map((m, i) => {
+    const [yr, , nm, , k] = m, x = X(yr), c = K[k][0], ly = AY - 60 - LV[i] * 56;
+    const g = el('g', { class: 'node a', style: `--i:${i * .5 + 2}` }, G);
+    el('line', { x1: x, y1: AY, x2: x, y2: ly + 12, stroke: c, 'stroke-width': 2, 'stroke-dasharray': '4 5', opacity: .7 }, g);
+    el('circle', { cx: x, cy: AY, r: 11, fill: c, class: 'dot', filter: 'url(#glw)' }, g);
+    const t = el('text', { x, y: ly, 'text-anchor': i === 0 ? 'start' : (i === M.length - 1 ? 'end' : 'middle'), fill: c, 'font-size': 22, 'font-weight': 800, class: 'nm' }, g);
+    t.textContent = nm;
+    return g;
+  });
+  let cur = 0, tm = 0;
+  const D = $('#tdet');
+  const show = i => {
+    cur = i; nodes.forEach((n, j) => n.classList.toggle('cur', j === i));
+    D.classList.add('sw');
+    setTimeout(() => {
+      const m = M[i]; $('#tdY').textContent = m[1]; $('#tdN').textContent = m[2]; $('#tdT').textContent = m[3];
+      $('#tdK').textContent = K[m[4]][1]; D.style.setProperty('--kc', K[m[4]][0]); D.classList.remove('sw');
+    }, 200);
+  };
+  const play = () => { clearInterval(tm); tm = setInterval(() => { if (G.closest('.slide').classList.contains('on')) show((cur + 1) % M.length); }, 2600); };
+  nodes.forEach((n, i) => { n.addEventListener('click', () => { show(i); play(); }); n.addEventListener('mouseenter', () => { show(i); play(); }); });
+  show(0); play();
+})();
+
+// Espectro por misión
+(() => {
+  const G = $('#mspec'); if (!G) return;
+  const X = um => 300 + (Math.log10(um) + 1) / 7 * 1360;
+  const R = [['UV', .1, .4, '#a06bff'], ['VIS', .4, .7, '#2de26a'], ['NIR', .7, 1.3, '#ff4fa3'], ['SWIR', 1.3, 3, '#ffc857'], ['Térmico', 3, 15, '#ff7a45'], ['', 15, 1000, '#555'], ['Microondas', 1000, 1e6, '#00c6ff']];
+  R.forEach(([n, a, b, c], i) => {
+    el('rect', { x: X(a), y: 10, width: X(b) - X(a), height: 560, fill: c, opacity: n ? .09 : .03, class: 'a f', style: `--i:${i * .3}` }, G);
+    if (n) el('text', { x: (X(a) + X(b)) / 2, y: 0, 'text-anchor': 'middle', class: 't-lab', 'font-size': 19, fill: c }, G).textContent = n;
+  });
+  [[.1, '0.1 µm'], [1, '1 µm'], [10, '10 µm'], [1e3, '1 mm'], [1e4, '1 cm'], [1e5, '10 cm'], [1e6, '1 m']].forEach(([v, l]) => {
+    el('line', { x1: X(v), y1: 10, x2: X(v), y2: 575, class: 'gridl' }, G);
+    el('text', { x: X(v), y: 610, 'text-anchor': 'middle', class: 't-lab' }, G).textContent = l;
+  });
+  const rows = [
+    ['Sentinel-2', 'opt', [[.443, 2.19, '13 bandas']]],
+    ['Landsat 8–9 TIRS', 'opt', [[10.6, 12.5, '2 bandas']]],
+    ['ECOSTRESS', 'opt', [[1.6, 1.7, ''], [8, 12.5, 'SWIR + 5 térmicas']]],
+    ['ICESat-2', 'las', [[.532, .532, '532 nm']]],
+    ['GEDI', 'las', [[1.064, 1.064, '1064 nm']]],
+    ['Sentinel-1', 'rad', [[55500, 55500, 'C · 5.5 cm']]],
+    ['NISAR', 'rad', [[1e5, 1e5, 'S'], [2.4e5, 2.4e5, 'L · 24 cm']]],
+    ['ALOS-2', 'rad', [[2.5e5, 2.5e5, 'L · 25 cm']]],
+    ['BIOMASS', 'rad', [[7e5, 7e5, 'P · 70 cm']]]
+  ];
+  const C = { opt: '#ff7a45', las: '#2de2a6', rad: '#00c6ff' };
+  rows.forEach(([n, k, segs], i) => {
+    const y = 48 + i * 60, c = C[k];
+    el('text', { x: 0, y: y + 8, fill: '#fff', 'font-size': 26, 'font-weight': 800, class: 'a', style: `--i:${i + 2}` }, G).textContent = n;
+    el('line', { x1: 300, y1: y, x2: 1660, y2: y, stroke: 'rgba(255,255,255,.06)', 'stroke-width': 2 }, G);
+    segs.forEach(([a, b, l], j) => {
+      const x1 = X(a), x2 = X(b);
+      if (a === b) el('circle', { cx: x1, cy: y, r: 13, fill: c, class: 'a z', style: `--i:${i * .6 + 3}`, filter: 'url(#glw)' }, G);
+      else el('rect', { x: x1, y: y - 12, width: Math.max(10, x2 - x1), height: 24, rx: 12, fill: c, class: 'bar', style: `--i:${i * .6}`, filter: 'url(#glw)' }, G);
+      if (l) el('text', { x: (a === b ? x1 : x2) + 24, y: y + 7, class: 't-lab a', 'font-size': 20, style: `--i:${i * .6 + 4}` }, G).textContent = l;
+    });
+  });
+})();
+
+// Altura de órbita
+(() => {
+  const A = $('#alt'); if (!A) return;
+  const D = [['GEDI · ECOSTRESS', 419, '#2de2a6', '#0b6b5a', 'Estación Espacial'], ['ICESat-2', 496, '#2de2a6', '#0b6b5a', ''], ['ALOS-2', 636, '#00c6ff', '#1a3fa6', ''], ['Sentinel-1', 693, '#00c6ff', '#1a3fa6', ''], ['NISAR', 743, '#00c6ff', '#1a3fa6', ''], ['Sentinel-2', 786, '#ff7a45', '#8c2a12', '']];
+  A.innerHTML = D.map(([n, v, k1, k2], i) => `<div class="vb"><svg class="ic float" style="width:54px;height:54px;color:${k1}"><use href="#i-sat"/></svg><div class="vl" style="font-size:44px"><span class="cnt" data-to="${v}"></span></div><div class="vbar" style="--h:${(v / 820 * 100).toFixed(1)}%;--k1:${k1};--k2:${k2};--i:${i}"></div><div class="nm">${n}</div></div>`).join('');
+})();
 
 // Etiquetas tipo píldora (se miden con el texto final)
 function pills() {
